@@ -1,14 +1,14 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Header from "./components/header";
 import Quiz from "./components/quiz";
 import "./App.css";
 
 const App = ({}) => {
   return (
-    <div>
-      <Header />
+    <Fragment>
+      {/* <Header /> */}
       <Quiz />
-    </div>
+    </Fragment>
   );
 };
 

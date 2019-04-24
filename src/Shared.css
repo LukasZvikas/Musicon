@@ -1,0 +1,12 @@
+.heading__primary {
+  font-size: var(--font-lg);
+  color: var(--color-primary);
+  /* background: var(--linear-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent; */
+}
+.heading__secondary {
+  color: var(--color-primary);
+  font-size: var(--font-md);
+}

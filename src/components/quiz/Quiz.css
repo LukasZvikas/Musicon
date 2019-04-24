@@ -1,0 +1,12 @@
+.quiz {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.quiz__genres {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

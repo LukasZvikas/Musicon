@@ -1,9 +1,22 @@
-.button__primary {
+.button__quiz-empty {
   padding: 1rem;
   border-radius: 5px;
   border: none;
-  background-color: var(--main-color);
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  font-size: var(--font-sm);
+  margin: 1rem;
+}
+
+.button__primary {
+  border-radius: 5px;
+  border: none;
+  background-color: var(--color-primary);
   color: var(--color-white);
   font-size: var(--font-md);
-  margin: 1rem;
+  margin: 2rem;
+  padding: 1rem;
+}
+
+.button__primary:hover {
 }
