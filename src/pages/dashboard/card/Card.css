@@ -1,12 +1,32 @@
 .swipe-card {
+  position: relative;
 }
 
 .swipe-card__image-wrapper {
   height: 380px;
   width: 280px;
+  perspective: 1500px;
 }
 
 .swipe-card__image {
   height: 100%;
   width: 100%;
+  transition: 0.8s all ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  backface-visibility: hidden;
+  object-fit: cover;
+}
+
+.swipe-card__image-back {
+  transform: rotateY(180deg);
+}
+
+.rotateNext {
+  transform: rotateY(180deg);
+}
+
+.rotateBack {
+  transform: rotateY(0);
 }
