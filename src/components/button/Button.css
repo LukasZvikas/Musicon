@@ -6,6 +6,7 @@
   color: var(--color-primary);
   font-size: var(--font-sm);
   margin: 1rem;
+  cursor: pointer;
 }
 
 .button__primary {
@@ -16,6 +17,7 @@
   font-size: var(--font-md);
   margin: 2rem;
   padding: 1rem;
+  cursor: pointer;
 }
 
 .button__primary:hover {

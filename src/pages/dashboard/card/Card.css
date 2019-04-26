@@ -1,0 +1,12 @@
+.swipe-card {
+}
+
+.swipe-card__image-wrapper {
+  height: 380px;
+  width: 280px;
+}
+
+.swipe-card__image {
+  height: 100%;
+  width: 100%;
+}

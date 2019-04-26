@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { quizData } from "./quizData";
-import { Button } from "../button/";
+import { Button } from "../../components/button/";
 import "./Quiz.css";
 import "../../Shared.css";
 
