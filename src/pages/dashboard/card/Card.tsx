@@ -6,9 +6,18 @@ import { NextArrow } from "../../../svg/nextArrow";
 interface CardProps {
   nextSong: () => void;
   previousSong: () => void;
+  updateImage: () => void;
+  frontImage: string;
+  backImage: string;
 }
 
-export const Card = ({ nextSong, previousSong }: CardProps) => {
+export const Card = ({
+  nextSong,
+  previousSong,
+  updateImage,
+  frontImage,
+  backImage
+}: CardProps) => {
   const [rotate, rotateCard] = useState(false);
 
   const changeCard = () => rotateCard(!rotate);
@@ -27,13 +36,13 @@ export const Card = ({ nextSong, previousSong }: CardProps) => {
           className={`swipe-card__image swipe-card__image-front ${
             rotate ? "rotateNext" : ""
           }`}
-          src="https://i.scdn.co/image/db2133234d458f432ca207e163a801524a15f993"
+          src={frontImage}
         />
         <img
           className={`swipe-card__image swipe-card__image-back ${
             rotate ? "rotateBack" : ""
           }`}
-          src="https://i.scdn.co/image/cdca7dc20c778ada42fb18506ea1f26857f01d17"
+          src={backImage}
         />
       </div>
 
@@ -42,6 +51,9 @@ export const Card = ({ nextSong, previousSong }: CardProps) => {
           console.log("clicked");
           changeCard();
           nextSong();
+          setTimeout(function() {
+            updateImage();
+          }, 500);
         }}
       />
     </div>

@@ -5,7 +5,7 @@
 .swipe-card__image-wrapper {
   height: 380px;
   width: 280px;
-  perspective: 1500px;
+  perspective: 5000px;
 }
 
 .swipe-card__image {

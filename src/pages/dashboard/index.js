@@ -6,21 +6,6 @@ import { Button } from "../../components/button";
 import "../../Shared.css";
 import "./Dashboard.css";
 
-// const songData = [
-//   {
-//     songName: "ZEZE",
-//     artists: ["Kodak Black", "Offset", "Travis Scott"],
-//     preview:
-//       "https://p.scdn.co/mp3-preview/6ccc75509be729ffb01b1df3a8183e4e88dc6303?cid=774b29d4f13844c495f206cafdad9c86"
-//   },
-//   {
-//     songName: "SICKO MODE",
-//     artists: ["Travis Scott", "Drake"],
-//     preview:
-//       "https://p.scdn.co/mp3-preview/1c3c01c64477b356e28a652b6447f4ef96689a71?cid=774b29d4f13844c495f206cafdad9c86"
-//   }
-// ];
-
 const TRACKS_QUERY = gql`
   query TracksQuery {
     tracks {
@@ -30,12 +15,19 @@ const TRACKS_QUERY = gql`
         name
       }
       preview_url
+      album {
+        images {
+          url
+        }
+      }
     }
   }
 `;
 
 const Dashboard = () => {
   const [currentIndex, updateIndex] = useState(0);
+  const [frontImageIndex, updateFrontImageIndex] = useState(0);
+  const [backImageIndex, updateBackImageIndex] = useState(1);
 
   const nextSong = () => {
     updateIndex(currentIndex + 1);
@@ -47,10 +39,18 @@ const Dashboard = () => {
     document.querySelector(".dashboard__video").load();
   };
 
+  const determineUpdateAction = () => {
+    if (currentIndex % 2 === 0) {
+      updateFrontImageIndex(frontImageIndex + 2);
+    } else {
+      updateBackImageIndex(backImageIndex + 2);
+    }
+  };
+
   const renderArtists = arr => {
     return arr.map((artist, index) => {
       if (index === arr.length - 1) return artist.name;
-      return artist + ", ";
+      return artist.name + ", ";
     });
   };
 
@@ -67,6 +67,9 @@ const Dashboard = () => {
                 <Card
                   nextSong={() => nextSong()}
                   previousSong={() => previousSong()}
+                  frontImage={data.tracks[frontImageIndex].album.images.url}
+                  backImage={data.tracks[backImageIndex].album.images.url}
+                  updateImage={() => determineUpdateAction()}
                 />
                 <div className="dashboard__heading-wrapper mb-2 mt-2">
                   <div className="heading__primary m-1 text-center">

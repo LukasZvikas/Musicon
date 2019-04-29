@@ -62,16 +62,18 @@ const RootQuery = new GraphQLObjectType({
         console.log("HELLO");
         try {
           const result = await axios.get(
-            "https://api.spotify.com/v1/recommendations?limit=10&market=ES&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=hip-hop&seed_tracks=0c6xIDDpzE81m2q797ordA",
+            "https://api.spotify.com/v1/recommendations?limit=30&market=ES&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=hip-hop&seed_tracks=0c6xIDDpzE81m2q797ordA",
             {
               headers: {
                 Authorization:
-                  "Bearer BQDV2LbSfL4DwVKuqNauTLUP2mFQTlOr4a1P7OQY4eOMpovN9geDCqjviFoEFTnakfOXxUYGdIS1h32JiWyyH4o-QGHUv5cfoNuRqnDEu3ekNQ98MDXkEDcXMpNyP4YThQisP-Zp380"
+                  "Bearer BQAlWAxoRZw8t7QEILY1s4vnjd8r7GIbDPTxZL81VMvd5aDc1FN91XjjNYB8wl1JvwXOpmw-0MX9DD0qsdI2NtrZIppJs0EIm7eeMEMdagAjn0DiWssugNbLp4bWwA0MEvLYzKXTLII"
               }
             }
           );
 
-          return result.data.tracks;
+          return result.data.tracks.filter(
+            ({ preview_url }) => preview_url !== null
+          );
         } catch (err) {
           console.log(err);
           throw new Error("problem occurred while fetching artists");
