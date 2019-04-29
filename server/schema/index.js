@@ -2,14 +2,54 @@ const {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
-  GraphQLList
+  GraphQLList,
+  GraphQLID
 } = require("graphql");
 const axios = require("axios");
 
-const TrackSuggestions = new GraphQLObjectType({
-  name: "SongSuggestion",
+const TrackSuggestionType = new GraphQLObjectType({
+  name: "trackSuggestions",
   fields: () => ({
-    is_playable: { type: GraphQLString }
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    artists: {
+      type: new GraphQLList(ArtistType),
+      resolve(params, args) {
+        return params.artists.map(artist => {
+          return artist;
+        });
+      }
+    },
+    preview_url: { type: GraphQLString },
+    album: {
+      type: ImageType
+    }
+  })
+});
+
+const ArtistType = new GraphQLObjectType({
+  name: "artists",
+  fields: () => ({
+    name: { type: GraphQLString }
+  })
+});
+
+const ImageType = new GraphQLObjectType({
+  name: "image",
+  fields: () => ({
+    images: {
+      type: new GraphQLObjectType({
+        name: "url",
+        fields: () => ({
+          url: {
+            type: GraphQLString,
+            resolve(params, args) {
+              return params[0].url;
+            }
+          }
+        })
+      })
+    }
   })
 });
 
@@ -17,20 +57,20 @@ const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
   fields: {
     tracks: {
-      type: new GraphQLList(TrackSuggestions),
+      type: new GraphQLList(TrackSuggestionType),
       async resolve(parent, args) {
-        console.log("HERE");
+        console.log("HELLO");
         try {
           const result = await axios.get(
-            "https://api.spotify.com/v1/recommendations?limit=1&market=ES&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA",
+            "https://api.spotify.com/v1/recommendations?limit=10&market=ES&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=hip-hop&seed_tracks=0c6xIDDpzE81m2q797ordA",
             {
               headers: {
                 Authorization:
-                  "Bearer BQClD-W8GLeXIh9pa0UiIw2abKA4nnoWlYYrGbM5Ji1yvuUVw159PamNRbZNJVbYhqusnEV31vSw25isev6ZG8XC-cn8nAnHPIjp0i8CCFrNE9gHuseLL51TIST4mZ5J_C9iueTBe1k"
+                  "Bearer BQDV2LbSfL4DwVKuqNauTLUP2mFQTlOr4a1P7OQY4eOMpovN9geDCqjviFoEFTnakfOXxUYGdIS1h32JiWyyH4o-QGHUv5cfoNuRqnDEu3ekNQ98MDXkEDcXMpNyP4YThQisP-Zp380"
               }
             }
           );
-          
+
           return result.data.tracks;
         } catch (err) {
           console.log(err);
