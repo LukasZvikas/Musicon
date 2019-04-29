@@ -62,11 +62,11 @@ const RootQuery = new GraphQLObjectType({
         console.log("HELLO");
         try {
           const result = await axios.get(
-            "https://api.spotify.com/v1/recommendations?limit=30&market=ES&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=hip-hop&seed_tracks=0c6xIDDpzE81m2q797ordA",
+            "https://api.spotify.com/v1/recommendations?limit=50&market=ES&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=hip-hop&target_popularity=50&seed_tracks=0c6xIDDpzE81m2q797ordA",
             {
               headers: {
                 Authorization:
-                  "Bearer BQAlWAxoRZw8t7QEILY1s4vnjd8r7GIbDPTxZL81VMvd5aDc1FN91XjjNYB8wl1JvwXOpmw-0MX9DD0qsdI2NtrZIppJs0EIm7eeMEMdagAjn0DiWssugNbLp4bWwA0MEvLYzKXTLII"
+                  "Bearer BQCfkDyvc2Fd1eNUra74UgPjJLfaPBCEBhxZXfcSPdshk8W9bR8fJ8A-8gVtfqVeyvw64JlZg4ZV1IPjbsU2G2HDV8ASeeu3NZPx6sZTsg4NEv2-RIcqgvC324WtJz_EKGddaFSv6HY"
               }
             }
           );
