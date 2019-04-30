@@ -3,7 +3,8 @@ const {
   GraphQLObjectType,
   GraphQLString,
   GraphQLList,
-  GraphQLID
+  GraphQLID,
+  GraphQLNonNull
 } = require("graphql");
 const axios = require("axios");
 
@@ -53,20 +54,44 @@ const ImageType = new GraphQLObjectType({
   })
 });
 
+const SelectedGenresType = new GraphQLObjectType({
+  name: "selectedGenres",
+  fields: () => ({
+    genre: {
+      type: GraphQLString,
+      resolve(parent, args) {
+        console.log("args", args);
+      }
+    }
+  })
+});
+
 const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
   fields: {
     tracks: {
       type: new GraphQLList(TrackSuggestionType),
+      args: {
+        selectedGenres: { type: new GraphQLList(GraphQLString) }
+      },
       async resolve(parent, args) {
-        console.log("HELLO");
+        const genres = args.selectedGenres.reduce((acc, value) => {
+          if (value === "R&B") return acc.concat("r-n-b,");
+          else {
+            return acc.concat(`${value.toLowerCase()},`);
+          }
+        }, "");
+
         try {
           const result = await axios.get(
-            "https://api.spotify.com/v1/recommendations?limit=50&market=ES&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=hip-hop&target_popularity=50&seed_tracks=0c6xIDDpzE81m2q797ordA",
+            `https://api.spotify.com/v1/recommendations?limit=50&market=US`,
             {
+              params: {
+                seed_genres: genres
+              },
               headers: {
                 Authorization:
-                  "Bearer BQCfkDyvc2Fd1eNUra74UgPjJLfaPBCEBhxZXfcSPdshk8W9bR8fJ8A-8gVtfqVeyvw64JlZg4ZV1IPjbsU2G2HDV8ASeeu3NZPx6sZTsg4NEv2-RIcqgvC324WtJz_EKGddaFSv6HY"
+                  "Bearer BQDwmEXMzRi8Uj_jVwYvBIAo2gjIh6M5dYAZLjSe_hVHxF0wNPQ6f6H1q2SESxozQ6AGqls7yBq0E39egG-iiNr-q9NIM2-3jgyctKNcz_hT1KjplcapUmz8k92tJVlbhYzzXLuBFSQ"
               }
             }
           );
