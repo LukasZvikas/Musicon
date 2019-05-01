@@ -2,75 +2,16 @@ const {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
-  GraphQLList,
-  GraphQLID,
-  GraphQLNonNull
+  GraphQLList
 } = require("graphql");
 const axios = require("axios");
-
-const TrackSuggestionType = new GraphQLObjectType({
-  name: "trackSuggestions",
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    artists: {
-      type: new GraphQLList(ArtistType),
-      resolve(params, args) {
-        return params.artists.map(artist => {
-          return artist;
-        });
-      }
-    },
-    preview_url: { type: GraphQLString },
-    album: {
-      type: ImageType
-    }
-  })
-});
-
-const ArtistType = new GraphQLObjectType({
-  name: "artists",
-  fields: () => ({
-    name: { type: GraphQLString }
-  })
-});
-
-const ImageType = new GraphQLObjectType({
-  name: "image",
-  fields: () => ({
-    images: {
-      type: new GraphQLObjectType({
-        name: "url",
-        fields: () => ({
-          url: {
-            type: GraphQLString,
-            resolve(params, args) {
-              return params[0].url;
-            }
-          }
-        })
-      })
-    }
-  })
-});
-
-const SelectedGenresType = new GraphQLObjectType({
-  name: "selectedGenres",
-  fields: () => ({
-    genre: {
-      type: GraphQLString,
-      resolve(parent, args) {
-        console.log("args", args);
-      }
-    }
-  })
-});
+const TrackType = require("./trackType");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
   fields: {
-    tracks: {
-      type: new GraphQLList(TrackSuggestionType),
+    suggestedTracks: {
+      type: new GraphQLList(TrackType),
       args: {
         selectedGenres: { type: new GraphQLList(GraphQLString) }
       },
@@ -81,7 +22,6 @@ const RootQuery = new GraphQLObjectType({
             return acc.concat(`${value.toLowerCase()},`);
           }
         }, "");
-
         try {
           const result = await axios.get(
             `https://api.spotify.com/v1/recommendations?limit=50&market=US`,
@@ -91,7 +31,7 @@ const RootQuery = new GraphQLObjectType({
               },
               headers: {
                 Authorization:
-                  "Bearer BQDwmEXMzRi8Uj_jVwYvBIAo2gjIh6M5dYAZLjSe_hVHxF0wNPQ6f6H1q2SESxozQ6AGqls7yBq0E39egG-iiNr-q9NIM2-3jgyctKNcz_hT1KjplcapUmz8k92tJVlbhYzzXLuBFSQ"
+                  "Bearer BQDSwzyiomKlKXHQPVO85Swr-KidUvcFzheRgzgxmZlBbSR_eLlZYE2FCWkNn5TBG5mc4Fm1sUiawDWOhqnRhmW63qWxzzagCdPJ6c60wFujWqzVi1wNT0bZAVICj7Iqd-TUuO7-0XI"
               }
             }
           );
@@ -99,6 +39,37 @@ const RootQuery = new GraphQLObjectType({
           return result.data.tracks.filter(
             ({ preview_url }) => preview_url !== null
           );
+        } catch (err) {
+          console.log(err);
+          throw new Error("problem occurred while fetching artists");
+        }
+      }
+    },
+    savedTracks: {
+      type: new GraphQLList(TrackType),
+      args: {
+        savedTracks: { type: new GraphQLList(GraphQLString) }
+      },
+      async resolve(parent, args) {
+        console.log("ARGS", args);
+        const songIds = args.savedTracks.reduce((acc, value, index, arr) => {
+          if (index === arr.length - 1) return acc.concat(value);
+          return `${acc.concat(value)},`;
+        }, "");
+
+        console.log("SONGS", songIds);
+        try {
+          const result = await axios.get(`https://api.spotify.com/v1/tracks`, {
+            params: {
+              ids: songIds
+            },
+            headers: {
+              Authorization:
+                "Bearer BQDSwzyiomKlKXHQPVO85Swr-KidUvcFzheRgzgxmZlBbSR_eLlZYE2FCWkNn5TBG5mc4Fm1sUiawDWOhqnRhmW63qWxzzagCdPJ6c60wFujWqzVi1wNT0bZAVICj7Iqd-TUuO7-0XI"
+            }
+          });
+          console.log("RESULT", result);
+          return result.data.tracks;
         } catch (err) {
           console.log(err);
           throw new Error("problem occurred while fetching artists");

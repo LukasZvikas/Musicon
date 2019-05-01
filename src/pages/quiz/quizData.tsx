@@ -1,5 +1,5 @@
 export const quizData: { genre: string }[] = [
-  { genre: "Rap" },
+  { genre: "Hip-hop" },
   { genre: "Latin" },
   { genre: "Country" },
   { genre: "Pop" },

@@ -1,22 +1,19 @@
 import React, { useState } from "react";
-import "./Card.css";
+import "./SwipeCard.css";
 import { BackArrow } from "../../../svg/backArrow";
 import { NextArrow } from "../../../svg/nextArrow";
 
 interface CardProps {
   nextSong: () => void;
   previousSong: () => void;
-  updateImage: () => void;
-  frontImage: string;
-  backImage: string;
+  image: string;
 }
 
-export const Card = ({
+export const SwipeCard = ({
   nextSong,
   previousSong,
-  updateImage,
-  frontImage,
-  backImage
+
+  image
 }: CardProps) => {
   const [rotate, rotateCard] = useState(false);
 
@@ -36,13 +33,13 @@ export const Card = ({
           className={`swipe-card__image swipe-card__image-front ${
             rotate ? "rotateNext" : ""
           }`}
-          src={frontImage}
+          src={image}
         />
         <img
           className={`swipe-card__image swipe-card__image-back ${
             rotate ? "rotateBack" : ""
           }`}
-          src={backImage}
+          src={image}
         />
       </div>
 
@@ -51,9 +48,6 @@ export const Card = ({
           console.log("clicked");
           changeCard();
           nextSong();
-          setTimeout(function() {
-            updateImage();
-          }, 500);
         }}
       />
     </div>

@@ -5,7 +5,7 @@ interface ButtonProps {
   title: string;
   type: string;
   action: () => void;
-  fill: string;
+  fill?: boolean;
 }
 export const Button = ({ title, type, action, fill }: ButtonProps) => {
   const onButtonClick = () => {

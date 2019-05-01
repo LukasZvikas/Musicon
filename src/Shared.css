@@ -6,7 +6,18 @@
   background-clip: text;
   -webkit-text-fill-color: transparent; */
 }
+
+.heading__primary-small {
+  font-size: var(--font-md);
+  color: var(--color-primary);
+}
+
 .heading__secondary {
   color: var(--color-primary);
   font-size: var(--font-md);
+}
+
+.heading__secondary-small {
+  color: var(--color-white);
+  font-size: var(--font-sm);
 }
