@@ -7,7 +7,7 @@ const {
 const axios = require("axios");
 const TrackType = require("./trackType");
 const UserType = require("./userType");
-// const UserPlaylistList = require("./userPlaylistType");
+const UserPlaylistList = require("./userPlaylistType");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
@@ -86,34 +86,39 @@ const RootQuery = new GraphQLObjectType({
               Authorization: `Bearer ${token}`
             }
           });
-          console.log("RESULT", result.data);
+
           return result.data;
         } catch (err) {
           throw new Error("problem occurred while fetching user's data");
         }
       }
+    },
+    userPlaylists: {
+      type: new GraphQLList(UserPlaylistList),
+      args: {
+        username: {
+          type: GraphQLString
+        }
+      },
+      async resolve(parent, args, req) {
+        const token = req.headers.token;
+        try {
+          const result = await axios.get(
+            `https://api.spotify.com/v1/users/${args.username}/playlists`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
+          console.log("RESULT", result.data);
+          return result.data.items;
+        } catch (err) {
+          // console.log(err);
+          throw new Error("problem occurred while fetching user playlist");
+        }
+      }
     }
-    // userPlaylistList: {
-    //   type: new GraphQLList(UserPlaylistList),
-    //   async resolve(parent, args, req){
-    //       console.log()
-    //       try {
-    //         const result = await axios.get(`https://api.spotify.com/v1/users/{user_id}/playlists`, {
-    //           params: {
-    //             ids: songIds
-    //           },
-    //           headers: {
-    //             Authorization: `Bearer ${token}`
-    //           }
-    //         });
-    //         console.log("RESULT", result);
-    //         return result.data.tracks;
-    //       } catch (err) {
-    //         // console.log(err);
-    //         throw new Error("problem occurred while fetching artists");
-    //       }
-    //   }
-    // }
   }
 });
 

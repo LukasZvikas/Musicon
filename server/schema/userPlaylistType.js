@@ -1,20 +1,15 @@
 const { GraphQLString, GraphQLObjectType, GraphQlList } = require("graphql");
 
 const UserPlayListType = new GraphQLObjectType({
-  fields: () => ({
-    items: {
-      type: PlaylistIdType,
-      resolve(parent, args) {
-        console.log("args", args);
-      }
-    }
-  })
-});
-
-const PlaylistIdType = new GraphQLObjectType({
+  name: "userPlaylists",
   fields: () => ({
     id: {
+      type: GraphQLString
+    },
+    name: {
       type: GraphQLString
     }
   })
 });
+
+module.exports = UserPlayListType;
