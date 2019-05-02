@@ -6,6 +6,8 @@ const {
 } = require("graphql");
 const axios = require("axios");
 const TrackType = require("./trackType");
+const UserType = require("./userType");
+// const UserPlaylistList = require("./userPlaylistType");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
@@ -13,9 +15,12 @@ const RootQuery = new GraphQLObjectType({
     suggestedTracks: {
       type: new GraphQLList(TrackType),
       args: {
-        selectedGenres: { type: new GraphQLList(GraphQLString) }
+        selectedGenres: {
+          type: new GraphQLList(GraphQLString)
+        }
       },
-      async resolve(parent, args) {
+      async resolve(parent, args, req) {
+        const token = req.headers.token;
         const genres = args.selectedGenres.reduce((acc, value) => {
           if (value === "R&B") return acc.concat("r-n-b,");
           else {
@@ -30,8 +35,7 @@ const RootQuery = new GraphQLObjectType({
                 seed_genres: genres
               },
               headers: {
-                Authorization:
-                  "Bearer BQDSwzyiomKlKXHQPVO85Swr-KidUvcFzheRgzgxmZlBbSR_eLlZYE2FCWkNn5TBG5mc4Fm1sUiawDWOhqnRhmW63qWxzzagCdPJ6c60wFujWqzVi1wNT0bZAVICj7Iqd-TUuO7-0XI"
+                Authorization: `Bearer ${token}`
               }
             }
           );
@@ -50,32 +54,66 @@ const RootQuery = new GraphQLObjectType({
       args: {
         savedTracks: { type: new GraphQLList(GraphQLString) }
       },
-      async resolve(parent, args) {
-        console.log("ARGS", args);
+      async resolve(parent, args, req) {
+        const token = req.headers.token;
         const songIds = args.savedTracks.reduce((acc, value, index, arr) => {
           if (index === arr.length - 1) return acc.concat(value);
           return `${acc.concat(value)},`;
         }, "");
-
-        console.log("SONGS", songIds);
         try {
           const result = await axios.get(`https://api.spotify.com/v1/tracks`, {
             params: {
               ids: songIds
             },
             headers: {
-              Authorization:
-                "Bearer BQDSwzyiomKlKXHQPVO85Swr-KidUvcFzheRgzgxmZlBbSR_eLlZYE2FCWkNn5TBG5mc4Fm1sUiawDWOhqnRhmW63qWxzzagCdPJ6c60wFujWqzVi1wNT0bZAVICj7Iqd-TUuO7-0XI"
+              Authorization: `Bearer ${token}`
             }
           });
-          console.log("RESULT", result);
           return result.data.tracks;
         } catch (err) {
-          console.log(err);
+          // console.log(err);
           throw new Error("problem occurred while fetching artists");
         }
       }
+    },
+    userDetails: {
+      type: UserType,
+      async resolve(parent, args, req) {
+        const token = req.headers.token;
+        try {
+          const result = await axios.get("https://api.spotify.com/v1/me", {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          console.log("RESULT", result.data);
+          return result.data;
+        } catch (err) {
+          throw new Error("problem occurred while fetching user's data");
+        }
+      }
     }
+    // userPlaylistList: {
+    //   type: new GraphQLList(UserPlaylistList),
+    //   async resolve(parent, args, req){
+    //       console.log()
+    //       try {
+    //         const result = await axios.get(`https://api.spotify.com/v1/users/{user_id}/playlists`, {
+    //           params: {
+    //             ids: songIds
+    //           },
+    //           headers: {
+    //             Authorization: `Bearer ${token}`
+    //           }
+    //         });
+    //         console.log("RESULT", result);
+    //         return result.data.tracks;
+    //       } catch (err) {
+    //         // console.log(err);
+    //         throw new Error("problem occurred while fetching artists");
+    //       }
+    //   }
+    // }
   }
 });
 
