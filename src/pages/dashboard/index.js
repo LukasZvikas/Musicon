@@ -39,7 +39,6 @@ const Dashboard = props => {
     document.querySelector(".card__audio-bar").load();
   };
 
-  console.log("props", props.location.state);
   return (
     <div className="d-flex justify-content-center align-items-center h-100 flex-column">
       <Query
@@ -73,7 +72,10 @@ const Dashboard = props => {
                       data.suggestedTracks[currentIndex].id
                     )
                   }
-                  fill={true}
+                  colors={{
+                    backgroundColor: "rgb(255, 78, 80)",
+                    color: "#fff"
+                  }}
                 />
               </Fragment>
             );

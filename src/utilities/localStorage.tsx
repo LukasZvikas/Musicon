@@ -3,7 +3,12 @@ const TRACK_DATA = "track_data";
 export const getStorageData = (key: string) => {
   try {
     const data = localStorage.getItem(key);
-    if (data) return JSON.parse(data);
+    if (data) console.log("dat", data.split("]"));
+    if (data && data.split("]").length > 1) {
+      console.log("parsed", JSON.parse(data));
+      return JSON.parse(data);
+    }
+    return data;
   } catch {
     return null;
   }
@@ -14,15 +19,13 @@ export const updateStorageData = (key: string, data: string) => {
     const storageData = getStorageData(key);
 
     let stringifiedData;
-    console.log("data", storageData, "key", key);
     if (storageData && storageData.length) {
       storageData.push(data);
       stringifiedData = JSON.stringify(storageData);
-      console.log("STRINGI", stringifiedData);
       localStorage.setItem(key, stringifiedData);
       return stringifiedData;
     }
-
+    if (storageData.includes(data)) return null;
     const arr = [];
     arr.push(data);
     stringifiedData = JSON.stringify(arr);

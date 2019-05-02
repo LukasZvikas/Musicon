@@ -1,12 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { quizData } from "./quizData";
 import { Button } from "../../components/button";
+import { SpotifyIcon } from "../../svg/spotifyIcon";
 import "./Quiz.css";
 import "../../Shared.css";
 
 const Quiz = () => {
   const [genreState, changeGenreState] = useState(Array());
+
+  const authorizeUser = async () => {
+    window.location.href =
+      "https://accounts.spotify.com/en/authorize?client_id=b1e047dc11e749cfb928e1d33b784a2b&response_type=token&redirect_uri=http:%2F%2Flocalhost:3000%2F";
+  };
+
+  useEffect(() => {
+    const token = getHash();
+    if (token) localStorage.setItem("token", token);
+    return;
+  });
+
+  const getHash = () => {
+    const hash = window.location.hash
+      .substring(1)
+      .split("&")
+      .reduce(function(initial: any, item) {
+        if (item) {
+          var parts = item.split("=");
+          initial[parts[0]] = decodeURIComponent(parts[1]);
+        }
+        return initial;
+      }, {});
+
+    window.location.hash = "";
+
+    let _token = hash.access_token;
+    return _token;
+  };
 
   const onGenreClick = (name: string) => {
     const newState = genreState;
@@ -22,16 +52,38 @@ const Quiz = () => {
           type={"quiz-empty"}
           title={item.genre}
           action={() => onGenreClick(item.genre)}
-          fill={genreState.includes(item.genre)}
+          colors={
+            genreState.includes(item.genre)
+              ? { backgroundColor: "rgb(255, 78, 80)", color: "#fff" }
+              : { backgroundColor: "#fff", color: "rgb(255, 78, 80)" }
+          }
         />
       </div>
     ));
   };
 
   return (
-    <div className="quiz h-100">
+    <div className="quiz h-100 d-flex align-items-center">  
       <div className="heading__primary">Before We Start!</div>
-      <div className="heading__secondary m-4 text-center text-white">
+      <div className="d-flex justify-content-around align-items-center">
+        <div className="text-white" style={{ fontSize: "28px" }}>
+          1.
+        </div>
+        <Button
+          type={"primary"}
+          title={"Login with Spotify"}
+          action={() => {
+            authorizeUser();
+          }}
+          colors={{ backgroundColor: "#000", color: "#fff" }}
+        >
+          <SpotifyIcon />
+        </Button>
+      </div>
+      <div className="heading__secondary d-flex mb-4 mt-2 mx-3 text-center text-white">
+        <div className="text-white mr-2" style={{ fontSize: "28px" }}>
+          2.
+        </div>
         Please choose up to three of your favorite music genres.{" "}
       </div>
       <div className="quiz__genres row">{renderGenres(quizData)}</div>
@@ -40,7 +92,7 @@ const Quiz = () => {
           type={"primary"}
           title={"I'm ready!"}
           action={() => {}}
-          fill={true}
+          colors={{ backgroundColor: "rgb(255, 78, 80)", color: "#fff" }}
         />
       </Link>
     </div>

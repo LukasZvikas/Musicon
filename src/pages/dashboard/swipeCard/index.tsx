@@ -9,12 +9,7 @@ interface CardProps {
   image: string;
 }
 
-export const SwipeCard = ({
-  nextSong,
-  previousSong,
-
-  image
-}: CardProps) => {
+export const SwipeCard = ({ nextSong, previousSong, image }: CardProps) => {
   const [rotate, rotateCard] = useState(false);
 
   const changeCard = () => rotateCard(!rotate);

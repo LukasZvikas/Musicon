@@ -1,13 +1,19 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import "./Button.css";
 
 interface ButtonProps {
   title: string;
   type: string;
   action: () => void;
-  fill?: boolean;
+  colors: { backgroundColor: string; color: string };
 }
-export const Button = ({ title, type, action, fill }: ButtonProps) => {
+export const Button: FunctionComponent<ButtonProps> = ({
+  title,
+  type,
+  action,
+  colors,
+  children
+}) => {
   const onButtonClick = () => {
     action();
   };
@@ -15,10 +21,11 @@ export const Button = ({ title, type, action, fill }: ButtonProps) => {
   return (
     <div
       onClick={onButtonClick}
-      className={`button__${type} d-flex align-items-center justify-content-center`}
-      style={fill ? { backgroundColor: "rgb(255, 78, 80)", color: "#fff" } : {}}
+      className={`button__${type} d-flex align-items-center justify-content-center text-center`}
+      style={{ backgroundColor: colors.backgroundColor, color: colors.color }}
     >
       {title}
+      {children || null}
     </div>
   );
 };

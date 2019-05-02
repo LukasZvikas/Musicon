@@ -19,6 +19,7 @@ export const CardBody = ({
       return artist.name + ", ";
     });
   };
+
   return (
     <div className="card__heading-wrapper mb-2 mt-2">
       <div

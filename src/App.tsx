@@ -6,13 +6,17 @@ import Header from "./components/header";
 import Quiz from "./pages/quiz";
 import Dashboard from "./pages/dashboard/index.js";
 import SavedSongs from "./pages/savedSongs";
+import { getStorageData } from "./utilities/localStorage";
 import "./App.css";
 
-const client = new ApolloClient({
-  uri: "http://localhost:5000/graphql"
+export const client = new ApolloClient({
+  uri: "http://localhost:5000/graphql",
+  headers: {
+    token: getStorageData("token")
+  }
 });
 
-const App = ({}) => {
+const App = () => {
   return (
     <ApolloProvider client={client}>
       <BrowserRouter>
