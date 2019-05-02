@@ -18,7 +18,6 @@ export const SwipeCard = ({ nextSong, previousSong, image }: CardProps) => {
     <div className="swipe-card d-flex align-items-center">
       <BackArrow
         action={() => {
-          console.log("clicked");
           changeCard();
           previousSong();
         }}
@@ -40,7 +39,6 @@ export const SwipeCard = ({ nextSong, previousSong, image }: CardProps) => {
 
       <NextArrow
         action={() => {
-          console.log("clicked");
           changeCard();
           nextSong();
         }}

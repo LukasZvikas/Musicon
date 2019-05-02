@@ -30,7 +30,7 @@ const SAVED_TRACKS_QUERY = gql`
 
 const SavedSongs = () => {
   const [username, setUsername] = useState("");
-  const [currentPlaylist, setCurrentPlaylist] = useState("");
+  const [currentPlaylist, setCurrentPlaylist] = useState({ id: "", name: "" });
   const [userPlaylists, setUserPlaylists] = useState([]);
   const [songIds, setSongIds] = useState("");
   const [modalState, setModalState] = useState(false);
@@ -69,31 +69,76 @@ const SavedSongs = () => {
         variables: { username }
       })
       .then(result => {
-        setCurrentPlaylist(result.data.userPlaylists[0].name);
+        setCurrentPlaylist(result.data.userPlaylists[0]);
         setUserPlaylists(result.data.userPlaylists);
       })
       .catch(err => console.log("ERROR", err));
   };
 
-  const handleSelectChange = (value: string) => {
+  const addToPlaylistQuery = () => {
+    if (currentPlaylist.id)
+      client
+        .query({
+          query: gql`
+            query addToPlaylist($songIds: [String!]!, $playlist_id: String!) {
+              addToPlaylist(songIds: $songIds, playlist_id: $playlist_id) {
+                snapshot_id
+              }
+            }
+          `,
+          variables: {
+            songIds: getStorageData("saved_tracks"),
+            playlist_id: currentPlaylist.id
+          }
+        })
+        .then(result => console.log("RESS12", result))
+        .catch(err => console.log("ERROR", err));
+  };
+
+  const handleSelectChange = (value: { name: string; id: string }) => {
     setCurrentPlaylist(value);
   };
 
-  const renderSongs = (songs: any) => {
-    return songs.map((song: any, index: number) => (
-      <div className="d-flex justify-content-center align-items-center flex-column col-12 col-sm-6 col-md-4 p-3">
-        <Card key={index} image={song.album.images.url} />
-        <CardBody
-          artists={song.artists}
-          preview_url={song.preview_url}
-          name={song.name}
-          style={{
-            name: "heading__primary-small mb-2 mt-2 text-center",
-            artist: "heading__secondary-small mb-4 text-center"
-          }}
-        />
-      </div>
-    ));
+  const renderSongs = (
+    songs: {
+      album: { images: { url: string } };
+      artists: { name: string }[];
+      preview_url: string;
+      name: string;
+    }[]
+  ) => {
+    return songs.map(
+      (
+        song: {
+          album: { images: { url: string } };
+          artists: { name: string }[];
+          preview_url: string;
+          name: string;
+        },
+        index: number
+      ) => (
+        <div className="d-flex justify-content-center align-items-center flex-column col-12 col-sm-6 col-md-4 p-3">
+          <Card key={index} image={song.album.images.url} />
+          <CardBody
+            artists={song.artists}
+            preview_url={song.preview_url}
+            name={song.name}
+            style={{
+              name: "heading__primary-small mb-2 mt-2 text-center",
+              artist: "heading__secondary-small mb-4 text-center"
+            }}
+          />
+        </div>
+      )
+    );
+  };
+
+  const getPlaylistId = (name: string): string => {
+    const playlist: { name: string; id: string }[] = userPlaylists.filter(
+      (item: { name: string; id: string }) => item.name === name
+    );
+    console.log("PLA", playlist[0].id);
+    return playlist[0].id;
   };
 
   const renderPlaylists = (arr: { name: string; id: string }[]) =>
@@ -109,10 +154,14 @@ const SavedSongs = () => {
         if (props.loading) return <div>Loading...</div>;
         if (props.error) console.log("error", props.error);
         else {
-          return username ? (
+          return username && currentPlaylist ? (
             <Fragment>
               <Modal show={modalState}>
-                <PlaylistModalBody name={currentPlaylist} changeModalState={() => changeModalState()} />
+                <PlaylistModalBody
+                  name={currentPlaylist.name}
+                  changeModalState={() => changeModalState()}
+                  addToPlaylist={() => addToPlaylistQuery()}
+                />
               </Modal>
               <div className="d-flex justify-content-center align-items-center mt-5 mb-3 flex-column">
                 <div className="heading__primary mb-3">
@@ -120,13 +169,18 @@ const SavedSongs = () => {
                 </div>
                 <select
                   className="select-input"
-                  onChange={e => handleSelectChange(e.target.value)}
+                  onChange={e =>
+                    handleSelectChange({
+                      name: e.target.value,
+                      id: getPlaylistId(e.target.value)
+                    })
+                  }
                 >
                   {renderPlaylists(userPlaylists)}
                 </select>
                 <Button
                   type={"primary"}
-                  title={`Add these songs to "${currentPlaylist}"`}
+                  title={`Add these songs to "${currentPlaylist.name}"`}
                   action={() => {
                     changeModalState();
                   }}
@@ -136,7 +190,6 @@ const SavedSongs = () => {
                   }}
                 />
               </div>
-
               <div className="row">{renderSongs(props.data.savedTracks)}</div>
             </Fragment>
           ) : null;

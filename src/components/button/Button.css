@@ -5,7 +5,7 @@
   background-color: var(--color-white);
   color: var(--color-primary);
   font-size: var(--font-sm);
-  margin: 1rem;
+  margin: 0.8rem;
   cursor: pointer;
 }
 
@@ -16,9 +16,9 @@
   color: var(--color-white);
   font-size: var(--font-md);
   margin: 2rem;
-  padding: 1rem;
+  padding: 0.8rem;
   cursor: pointer;
 }
 
-.button__primary:hover {
-}
+/* .button__primary:hover {
+} */

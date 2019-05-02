@@ -11,7 +11,7 @@ const Quiz = () => {
 
   const authorizeUser = async () => {
     window.location.href =
-      "https://accounts.spotify.com/en/authorize?client_id=b1e047dc11e749cfb928e1d33b784a2b&response_type=token&redirect_uri=http:%2F%2Flocalhost:3000%2F";
+      "https://accounts.spotify.com/en/authorize?client_id=b1e047dc11e749cfb928e1d33b784a2b&response_type=token&redirect_uri=http:%2F%2Flocalhost:3000%2F&scope=playlist-modify-public";
   };
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const Quiz = () => {
   };
 
   return (
-    <div className="quiz h-100 d-flex align-items-center">  
+    <div className="quiz h-100 d-flex align-items-center">
       <div className="heading__primary">Before We Start!</div>
       <div className="d-flex justify-content-around align-items-center">
         <div className="text-white" style={{ fontSize: "28px" }}>

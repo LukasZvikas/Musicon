@@ -71,7 +71,6 @@ const RootQuery = new GraphQLObjectType({
           });
           return result.data.tracks;
         } catch (err) {
-          // console.log(err);
           throw new Error("problem occurred while fetching artists");
         }
       }
@@ -111,11 +110,59 @@ const RootQuery = new GraphQLObjectType({
               }
             }
           );
-          console.log("RESULT", result.data);
           return result.data.items;
         } catch (err) {
           // console.log(err);
           throw new Error("problem occurred while fetching user playlist");
+        }
+      }
+    },
+    addToPlaylist: {
+      type: new GraphQLObjectType({
+        name: "addToPlaylist",
+        fields: () => ({
+          snapshot_id: { type: GraphQLString }
+        })
+      }),
+      args: {
+        playlist_id: {
+          type: GraphQLString
+        },
+        songIds: {
+          type: new GraphQLList(GraphQLString)
+        }
+      },
+      async resolve(parent, args, req) {
+        const token = req.headers.token;
+
+        try {
+          const uris = args.songIds.reduce((acc, value, index, arr) => {
+            if (index === arr.length - 1)
+              return acc.concat(`spotify:track:${value}`);
+            return acc.concat(`spotify:track:${value},`);
+          }, "");
+
+          console.log("URI", uris);
+          console.log("ID", token);
+
+          const result = await axios(
+            `https://api.spotify.com/v1/playlists/${args.playlist_id}/tracks`,
+            {
+              method: "POST",
+              params: { uris },
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+              }
+            }
+          );
+          console.log("RESULT", result.data);
+          return result.data;
+        } catch (err) {
+          console.log("ERR", err);
+          throw new Error(
+            "problem occurred while adding songs to the playlist"
+          );
         }
       }
     }

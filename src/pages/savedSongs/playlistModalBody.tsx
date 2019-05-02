@@ -4,11 +4,13 @@ import { Button } from "../../components/button";
 interface PlaylistModalProps {
   name: string;
   changeModalState: () => void;
+  addToPlaylist: () => void;
 }
 
 export const PlaylistModalBody = ({
   name,
-  changeModalState
+  changeModalState,
+  addToPlaylist
 }: PlaylistModalProps) => {
   return (
     <Fragment>
@@ -36,7 +38,9 @@ export const PlaylistModalBody = ({
         <Button
           type={"primary"}
           title={"Add it"}
-          action={() => {}}
+          action={() => {
+            addToPlaylist();
+          }}
           colors={{
             backgroundColor: "#00D95F",
             color: "#fff"
