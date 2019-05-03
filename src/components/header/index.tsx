@@ -16,7 +16,7 @@ const Header = () => {
       </div>
       <ul className="header__links d-flex bg-transparent align-items-center">
         <li className="bg-transparent mr-4">
-          <Link to="/dashboard">Explore</Link>
+          <Link to="/explore">Explore</Link>
         </li>
         <li className="bg-transparent">
           <Link to="/saved">Saved Songs</Link>

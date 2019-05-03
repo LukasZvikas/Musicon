@@ -144,7 +144,7 @@ const SavedSongs = (props: any) => {
             name={song.name}
             style={{
               name: "heading__primary-small mb-2 mt-2 text-center",
-              artist: "heading__secondary-small mb-4 text-center"
+              artist: "heading__secondary-small mb-3 text-center text-white"
             }}
           />
           <div
@@ -202,7 +202,7 @@ const SavedSongs = (props: any) => {
                   addToPlaylist={() => addToPlaylistQuery()}
                 />
               </Modal>
-              <div className="d-flex justify-content-center align-items-center pt-5 mb-3 flex-column">
+              <div className="d-flex justify-content-center align-items-center mb-3 flex-column">
                 <div className="heading__primary mb-3">
                   Choose your playlist
                 </div>

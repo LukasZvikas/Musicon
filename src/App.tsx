@@ -4,7 +4,7 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import Header from "./components/header";
 import Quiz from "./pages/quiz";
-import Dashboard from "./pages/dashboard/index.js";
+import Explore from "./pages/explore";
 import SavedSongs from "./pages/savedSongs";
 import { getStorageData } from "./utilities/localStorage";
 import "./App.css";
@@ -23,8 +23,9 @@ const App = () => {
         <Header />
         <Switch>
           <Route path="/" exact component={Quiz} />
-          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/explore" component={Explore} />
           <Route path="/saved" component={SavedSongs} />
+          <Route path="/*" component={Quiz} />
         </Switch>
       </BrowserRouter>
     </ApolloProvider>

@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { quizData } from "./quizData";
 import { Button } from "../../components/button";
 import { SpotifyIcon } from "../../svg/spotifyIcon";
 import { Alert } from "../../components/alert";
+import {
+  updateStorageData,
+  getStorageData,
+  setStorageData
+} from "../../utilities/localStorage";
 import "./Quiz.css";
 import "../../Shared.css";
 
+interface GenreState {
+  genreState: string[];
+}
+
 const Quiz = (props: any) => {
-  const [genreState, changeGenreState] = useState(Array());
+  const [genreState, changeGenreState] = useState(new Array());
   const [isLoginSuccess, changeLoginSuccess] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [isLoginError, setIsLoginError] = useState(false);
+  const [isGenresError, setIsGenresError] = useState(false);
 
   const authorizeUser = async () => {
     window.location.href =
@@ -19,17 +28,20 @@ const Quiz = (props: any) => {
 
   useEffect(() => {
     if (props.location.state && props.location.state.authError) {
-      setIsError(true);
+      setIsLoginError(true);
       props.history.replace({ pathname: "/", state: { authError: false } });
       setTimeout(function() {
-        setIsError(false);
+        setIsLoginError(false);
       }, 2000);
       return;
     }
+
+    const selectedGenres = getStorageData("selected_genres");
+    if (selectedGenres) changeGenreState(selectedGenres);
     const token = getHash();
     if (token) localStorage.setItem("token", token);
     return;
-  });
+  }, []);
 
   const getHash = () => {
     const hash = window.location.hash
@@ -52,19 +64,37 @@ const Quiz = (props: any) => {
         changeLoginSuccess(false);
       }, 2000);
     }
-
     return _token;
   };
 
   const onGenreClick = (name: string) => {
-    const newState = genreState;
-    newState.push(name);
-    changeGenreState([...newState]);
+    let newState;
+    if (!genreState.includes(name) && genreState.length < 3) {
+      newState = genreState;
+      newState.push(name);
+      changeGenreState([...newState]);
+    } else {
+      const indexOfItem = genreState.indexOf(name);
+
+      if (indexOfItem === -1) return;
+
+      newState = genreState;
+      newState.splice(indexOfItem, 1);
+
+      changeGenreState([...newState]);
+    }
+  };
+
+  const onGenresError = () => {
+    setIsGenresError(true);
+    setTimeout(function() {
+      setIsGenresError(false);
+    }, 1000);
   };
 
   const renderGenres = (genres: { genre: string }[]) => {
     return genres.map((item, index: number) => (
-      <div className="col-5 col-sm-3 col-md-2">
+      <div className="col-6 col-sm-5 col-md-2">
         <Button
           key={index}
           type={"quiz-empty"}
@@ -85,8 +115,14 @@ const Quiz = (props: any) => {
       {isLoginSuccess ? (
         <Alert message={"You have logged in successfully!"} isSuccess={true} />
       ) : null}
-      {isError ? (
+      {isLoginError ? (
         <Alert message={"Please login first!"} isSuccess={false} />
+      ) : null}
+      {isGenresError ? (
+        <Alert
+          message={"Please choose at least one genre first!"}
+          isSuccess={false}
+        />
       ) : null}
       <div className="heading__primary">Before We Start!</div>
       <div className="d-flex align-items-center">
@@ -111,14 +147,18 @@ const Quiz = (props: any) => {
         Please choose up to three of your favorite music genres.{" "}
       </div>
       <div className="quiz__genres row">{renderGenres(quizData)}</div>
-      <Link to={{ pathname: "/dashboard", state: genreState }}>
-        <Button
-          type={"primary"}
-          title={"I'm ready!"}
-          action={() => {}}
-          colors={{ backgroundColor: "rgb(255, 78, 80)", color: "#fff" }}
-        />
-      </Link>
+
+      <Button
+        type={"primary"}
+        title={"I'm ready!"}
+        colors={{ backgroundColor: "rgb(255, 78, 80)", color: "#fff" }}
+        action={() =>
+          !genreState.length
+            ? onGenresError()
+            : (setStorageData("selected_genres", genreState),
+              props.history.push("/explore"))
+        }
+      />
     </div>
   );
 };

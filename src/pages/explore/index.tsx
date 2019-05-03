@@ -30,20 +30,31 @@ const TRACKS_QUERY = gql`
   }
 `;
 
-const Dashboard = props => {
+const Dashboard = (props: any) => {
   const [currentIndex, updateIndex] = useState(0);
   const [isSongSaved, setIsSongSaved] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const nextSong = () => {
     updateIndex(currentIndex + 1);
-    document.querySelector(".card__audio-bar").load();
+    const audioBar = document.querySelector(
+      ".card__audio-bar"
+    ) as HTMLVideoElement;
+    if (audioBar) audioBar.load();
   };
 
-  const saveSong = id => {
+  const previousSong = () => {
+    updateIndex(currentIndex - 1);
+    const audioBar = document.querySelector(
+      ".card__audio-bar"
+    ) as HTMLVideoElement;
+    if (audioBar) audioBar.load();
+  };
+
+  const saveSong = (id: string) => {
     const savedTracks = getStorageData("saved_tracks");
 
-    if (savedTracks.includes(id)) {
+    if (savedTracks && savedTracks.includes(id)) {
       setIsError(true);
       setTimeout(function() {
         setIsError(false);
@@ -61,9 +72,17 @@ const Dashboard = props => {
     }
   };
 
-  const previousSong = () => {
-    updateIndex(currentIndex - 1);
-    document.querySelector(".card__audio-bar").load();
+  const displayGenres = () => {
+    const genres = getStorageData("selected_genres");
+
+    return genres.reduce(
+      (acc: string[], value: string, index: number, arr: string[]) => {
+        if (index === arr.length - 1) return acc.concat(value);
+        console.log(acc);
+        return acc.concat(`${value}, `);
+      },
+      ""
+    );
   };
 
   return (
@@ -76,31 +95,47 @@ const Dashboard = props => {
       ) : null}
       <Query
         query={TRACKS_QUERY}
-        variables={{ selectedGenres: props.location.state }}
+        variables={{ selectedGenres: getStorageData("selected_genres") }}
       >
-        {({ loading, error, data }) => {
-          if (loading) return <h4>LOADING...</h4>;
-          if (error) {
+        {(properties: any) => {
+          if (properties.loading) return <h4>LOADING...</h4>;
+          if (properties.error) {
             props.history.push({ pathname: "/", state: { authError: true } });
             return null;
           } else {
             return (
               <div className="content-wrapper d-flex flex-column align-items-center">
+                <div
+                  className="heading__secondary mb-3"
+                  style={{ color: "rgb(255, 78, 80)" }}
+                >
+                  <span className="text-white">Current Genres:</span>{" "}
+                  {displayGenres()}
+                </div>
                 <SwipeCard
                   nextSong={() => nextSong()}
                   previousSong={() => previousSong()}
-                  image={data.suggestedTracks[currentIndex].album.images.url}
+                  image={
+                    properties.data.suggestedTracks[currentIndex].album.images
+                      .url
+                  }
                 />
 
                 <CardBody
-                  artists={data.suggestedTracks[currentIndex].artists}
-                  name={data.suggestedTracks[currentIndex].name}
-                  preview_url={data.suggestedTracks[currentIndex].preview_url}
+                  artists={
+                    properties.data.suggestedTracks[currentIndex].artists
+                  }
+                  name={properties.data.suggestedTracks[currentIndex].name}
+                  preview_url={
+                    properties.data.suggestedTracks[currentIndex].preview_url
+                  }
                 />
                 <Button
                   type={"primary"}
                   title={"Add to playlist"}
-                  action={() => saveSong(data.suggestedTracks[currentIndex].id)}
+                  action={() =>
+                    saveSong(properties.data.suggestedTracks[currentIndex].id)
+                  }
                   colors={{
                     backgroundColor: "rgb(255, 78, 80)",
                     color: "#fff"

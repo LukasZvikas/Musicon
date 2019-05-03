@@ -10,7 +10,7 @@
 
   --color-green: rgba(0, 217, 95, 1);
   --color-green-light: rgba(0, 217, 95, 0.8);
-  --color-white: #fff;
+  --color-white: rgb(19, 12, 12);
   --color-black: #000;
   --color-black-light: #282828;
 
@@ -38,7 +38,7 @@ body {
 }
 
 .content-wrapper {
-  padding: 5rem 0 0 0;
+  padding: 7rem 0 0 0;
 }
 
 .col-3,

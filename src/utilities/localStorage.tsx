@@ -14,7 +14,7 @@ export const getStorageData = (key: string) => {
   }
 };
 
-export const setStorageData = (key: string, data: string) => {
+export const setStorageData = (key: string, data: any) => {
   try {
     const stringifiedData = JSON.stringify(data);
 
