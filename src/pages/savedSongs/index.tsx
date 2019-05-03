@@ -6,7 +6,7 @@ import { Card } from "./card";
 import { Modal } from "../../components/modal";
 import { PlaylistModalBody } from "./playlistModalBody";
 import { CardBody } from "../../components/cardBody";
-import { SuccessMessage } from "../../components/successMessage";
+import { Alert } from "../../components/alert";
 import { Query } from "react-apollo";
 import { getStorageData, setStorageData } from "../../utilities/localStorage";
 import "./SavedSongs.css";
@@ -29,7 +29,7 @@ const SAVED_TRACKS_QUERY = gql`
   }
 `;
 
-const SavedSongs = () => {
+const SavedSongs = (props: any) => {
   const [username, setUsername] = useState("");
   const [currentPlaylist, setCurrentPlaylist] = useState({ id: "", name: "" });
   const [userPlaylists, setUserPlaylists] = useState([]);
@@ -177,19 +177,21 @@ const SavedSongs = () => {
 
   return songIds ? (
     <Query query={SAVED_TRACKS_QUERY} variables={{ savedTracks: songIds }}>
-      {(props: any) => {
-        if (props.loading) return <div>Loading...</div>;
-        if (props.error) console.log("error", props.error);
-        else {
-          !savedSongs.length && setSavedSongs(props.data.savedTracks);
-          console.log("SAVED", savedSongs);
+      {(properties: any) => {
+        if (properties.loading) return <div>Loading...</div>;
+        if (properties.error) {
+          props.history.push({ pathname: "/", state: { authError: true } });
+            return null;
+        } else {
+          !savedSongs.length && setSavedSongs(properties.data.savedTracks);
           return username && currentPlaylist ? (
             <Fragment>
               {isSavedPlaylist ? (
-                <SuccessMessage
+                <Alert
                   message={
                     "Selected songs were successfully added to your playlist"
                   }
+                  isSuccess={true}
                 />
               ) : null}
               <Modal show={modalState}>
@@ -228,7 +230,9 @@ const SavedSongs = () => {
               </div>
               <div className="row">{renderSongs(savedSongs)}</div>
             </Fragment>
-          ) : null;
+          ) : (
+            <div>Please login</div>
+          );
         }
       }}
     </Query>

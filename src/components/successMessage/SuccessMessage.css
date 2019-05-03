@@ -1,8 +1,0 @@
-.message__success {
-  background-color: var(--color-green-light);
-  position: absolute;
-  border-radius: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 0;
-}

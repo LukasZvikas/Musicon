@@ -3,11 +3,14 @@ import { Link } from "react-router-dom";
 import { quizData } from "./quizData";
 import { Button } from "../../components/button";
 import { SpotifyIcon } from "../../svg/spotifyIcon";
+import { Alert } from "../../components/alert";
 import "./Quiz.css";
 import "../../Shared.css";
 
-const Quiz = () => {
+const Quiz = (props: any) => {
   const [genreState, changeGenreState] = useState(Array());
+  const [isLoginSuccess, changeLoginSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const authorizeUser = async () => {
     window.location.href =
@@ -15,6 +18,14 @@ const Quiz = () => {
   };
 
   useEffect(() => {
+    if (props.location.state.authError) {
+      setIsError(true);
+      props.history.replace({ pathname: "/", state: {} });
+      setTimeout(function() {
+        setIsError(false);
+      }, 2000);
+      return;
+    }
     const token = getHash();
     if (token) localStorage.setItem("token", token);
     return;
@@ -35,6 +46,13 @@ const Quiz = () => {
     window.location.hash = "";
 
     let _token = hash.access_token;
+    if (_token) {
+      changeLoginSuccess(true);
+      setTimeout(function() {
+        changeLoginSuccess(false);
+      }, 2000);
+    }
+
     return _token;
   };
 
@@ -64,6 +82,12 @@ const Quiz = () => {
 
   return (
     <div className="quiz h-100 d-flex align-items-center">
+      {isLoginSuccess ? (
+        <Alert message={"You have logged in successfully!"} isSuccess={true} />
+      ) : null}
+      {isError ? (
+        <Alert message={"Please login first!"} isSuccess={false} />
+      ) : null}
       <div className="heading__primary">Before We Start!</div>
       <div className="d-flex justify-content-around align-items-center">
         <div className="text-white" style={{ fontSize: "28px" }}>

@@ -1,0 +1,17 @@
+.message {
+  position: absolute;
+  border-radius: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  z-index: 200;
+}
+
+.message__success {
+  background-color: var(--color-green-light);
+}
+
+.message__error {
+  background-color: var(--color-primary);
+}
+
