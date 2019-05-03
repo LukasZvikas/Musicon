@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import {
   updateStorageData,
   getStorageData
@@ -67,7 +67,7 @@ const Dashboard = props => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center h-100 flex-column">
+    <div className="d-flex justify-content-center align-items-center h-100">
       {isSongSaved ? (
         <Alert message={"Song was successfuly saved!"} isSuccess={true} />
       ) : null}
@@ -85,7 +85,7 @@ const Dashboard = props => {
             return null;
           } else {
             return (
-              <Fragment>
+              <div className="content-wrapper d-flex flex-column align-items-center">
                 <SwipeCard
                   nextSong={() => nextSong()}
                   previousSong={() => previousSong()}
@@ -106,7 +106,7 @@ const Dashboard = props => {
                     color: "#fff"
                   }}
                 />
-              </Fragment>
+              </div>
             );
           }
         }}

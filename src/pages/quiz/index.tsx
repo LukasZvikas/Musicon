@@ -18,9 +18,9 @@ const Quiz = (props: any) => {
   };
 
   useEffect(() => {
-    if (props.location.state.authError) {
+    if (props.location.state && props.location.state.authError) {
       setIsError(true);
-      props.history.replace({ pathname: "/", state: {} });
+      props.history.replace({ pathname: "/", state: { authError: false } });
       setTimeout(function() {
         setIsError(false);
       }, 2000);
@@ -89,7 +89,7 @@ const Quiz = (props: any) => {
         <Alert message={"Please login first!"} isSuccess={false} />
       ) : null}
       <div className="heading__primary">Before We Start!</div>
-      <div className="d-flex justify-content-around align-items-center">
+      <div className="d-flex align-items-center">
         <div className="text-white" style={{ fontSize: "28px" }}>
           1.
         </div>

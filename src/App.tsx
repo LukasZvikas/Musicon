@@ -20,8 +20,8 @@ const App = () => {
   return (
     <ApolloProvider client={client}>
       <BrowserRouter>
+        <Header />
         <Switch>
-          {/* <Header /> */}
           <Route path="/" exact component={Quiz} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/saved" component={SavedSongs} />

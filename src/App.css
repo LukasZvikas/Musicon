@@ -37,9 +37,17 @@ body {
   height: 100vh;
 }
 
+.content-wrapper {
+  padding: 5rem 0 0 0;
+}
+
 .col-3,
 .col-6 {
   padding: 0 !important;
+}
+
+h3 {
+  margin: 0 !important;
 }
 
 .row {

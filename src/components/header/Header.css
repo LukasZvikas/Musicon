@@ -1,7 +1,27 @@
 .header {
   display: flex;
   align-items: center;
-  background: beige;
+  background: var(--color-black);
+  color: var(--color-white);
   justify-content: space-between;
   padding: 1rem 1rem;
+  height: 10%;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+
+li {
+  list-style-type: none;
+  font-size: var(--font-sm);
+}
+
+ul {
+  margin-bottom: 0 !important;
+}
+
+
+.header__logo > h3 > a, .header > ul > li a {
+  text-decoration: none;
+  color: var(--color-primary);
 }

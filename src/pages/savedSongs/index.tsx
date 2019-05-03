@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useState } from "react";
+import React, { useEffect, useState } from "react";
 import gql from "graphql-tag";
 import { Button } from "../../components/button";
 import { client } from "../../App";
@@ -10,6 +10,7 @@ import { Alert } from "../../components/alert";
 import { Query } from "react-apollo";
 import { getStorageData, setStorageData } from "../../utilities/localStorage";
 import "./SavedSongs.css";
+import "../../Shared.css";
 
 const SAVED_TRACKS_QUERY = gql`
   query SavedTracks($savedTracks: [String!]!) {
@@ -181,11 +182,11 @@ const SavedSongs = (props: any) => {
         if (properties.loading) return <div>Loading...</div>;
         if (properties.error) {
           props.history.push({ pathname: "/", state: { authError: true } });
-            return null;
+          return null;
         } else {
           !savedSongs.length && setSavedSongs(properties.data.savedTracks);
           return username && currentPlaylist ? (
-            <Fragment>
+            <div className="content-wrapper">
               {isSavedPlaylist ? (
                 <Alert
                   message={
@@ -201,7 +202,7 @@ const SavedSongs = (props: any) => {
                   addToPlaylist={() => addToPlaylistQuery()}
                 />
               </Modal>
-              <div className="d-flex justify-content-center align-items-center mt-5 mb-3 flex-column">
+              <div className="d-flex justify-content-center align-items-center pt-5 mb-3 flex-column">
                 <div className="heading__primary mb-3">
                   Choose your playlist
                 </div>
@@ -229,7 +230,7 @@ const SavedSongs = (props: any) => {
                 />
               </div>
               <div className="row">{renderSongs(savedSongs)}</div>
-            </Fragment>
+            </div>
           ) : (
             <div>Please login</div>
           );
