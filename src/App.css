@@ -7,6 +7,9 @@
     var(--color-primary),
     var(--color-primary-dark)
   );
+
+  --color-green: rgba(0, 217, 95, 1);
+  --color-green-light: rgba(0, 217, 95, 0.8);
   --color-white: #fff;
   --color-black: #000;
   --color-black-light: #282828;
@@ -37,4 +40,8 @@ body {
 .col-3,
 .col-6 {
   padding: 0 !important;
+}
+
+.row {
+  margin: 0 !important;
 }

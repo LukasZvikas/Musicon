@@ -21,7 +21,7 @@ export const CardBody = ({
   };
 
   return (
-    <div className="card__heading-wrapper mb-2 mt-2">
+    <div className="card__heading-wrapper mt-2">
       <div
         className={
           style && style.name ? style.name : "heading__primary m-2 text-center"
@@ -38,7 +38,7 @@ export const CardBody = ({
       >
         {renderArtists(artists)}
       </div>
-      <video className="card__audio-bar mb-4" controls>
+      <video className="card__audio-bar" controls>
         <source src={`${preview_url}`} type="audio/mpeg" />
       </video>
     </div>

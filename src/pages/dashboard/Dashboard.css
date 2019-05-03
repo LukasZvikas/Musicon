@@ -2,7 +2,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 210px;
   width: 100%;
   align-items: center;
 }

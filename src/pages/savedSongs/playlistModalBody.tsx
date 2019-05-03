@@ -40,6 +40,7 @@ export const PlaylistModalBody = ({
           title={"Add it"}
           action={() => {
             addToPlaylist();
+            changeModalState();
           }}
           colors={{
             backgroundColor: "#00D95F",

@@ -14,6 +14,18 @@ export const getStorageData = (key: string) => {
   }
 };
 
+export const setStorageData = (key: string, data: string) => {
+  try {
+    const stringifiedData = JSON.stringify(data);
+
+    localStorage.setItem(key, stringifiedData);
+
+    return data;
+  } catch (err) {
+    return err;
+  }
+};
+
 export const updateStorageData = (key: string, data: string) => {
   try {
     const storageData = getStorageData(key);
@@ -25,7 +37,7 @@ export const updateStorageData = (key: string, data: string) => {
       localStorage.setItem(key, stringifiedData);
       return stringifiedData;
     }
-    if (storageData.includes(data)) return null;
+
     const arr = [];
     arr.push(data);
     stringifiedData = JSON.stringify(arr);

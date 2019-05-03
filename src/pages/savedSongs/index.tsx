@@ -6,8 +6,9 @@ import { Card } from "./card";
 import { Modal } from "../../components/modal";
 import { PlaylistModalBody } from "./playlistModalBody";
 import { CardBody } from "../../components/cardBody";
+import { SuccessMessage } from "../../components/successMessage";
 import { Query } from "react-apollo";
-import { getStorageData } from "../../utilities/localStorage";
+import { getStorageData, setStorageData } from "../../utilities/localStorage";
 import "./SavedSongs.css";
 
 const SAVED_TRACKS_QUERY = gql`
@@ -33,7 +34,9 @@ const SavedSongs = () => {
   const [currentPlaylist, setCurrentPlaylist] = useState({ id: "", name: "" });
   const [userPlaylists, setUserPlaylists] = useState([]);
   const [songIds, setSongIds] = useState("");
+  const [savedSongs, setSavedSongs] = useState([]);
   const [modalState, setModalState] = useState(false);
+  const [isSavedPlaylist, setIsSavedPlaylist] = useState("");
 
   useEffect(() => {
     const ids = getStorageData("saved_tracks");
@@ -91,8 +94,21 @@ const SavedSongs = () => {
             playlist_id: currentPlaylist.id
           }
         })
-        .then(result => console.log("RESS12", result))
+        .then(result => {
+          setIsSavedPlaylist(result.data.addToPlaylist.snapshot_id);
+          setTimeout(function() {
+            setIsSavedPlaylist("");
+          }, 2000);
+        })
         .catch(err => console.log("ERROR", err));
+  };
+
+  const removeSong = (trackId: string) => {
+    const songIds = getStorageData("saved_tracks");
+    const newSongIds = songIds.filter((item: string) => item !== trackId);
+    const newSongTracks = savedSongs.filter((item: any) => item.id !== trackId);
+    setStorageData("saved_tracks", newSongIds);
+    setSavedSongs(newSongTracks);
   };
 
   const handleSelectChange = (value: { name: string; id: string }) => {
@@ -101,6 +117,7 @@ const SavedSongs = () => {
 
   const renderSongs = (
     songs: {
+      id: string;
       album: { images: { url: string } };
       artists: { name: string }[];
       preview_url: string;
@@ -110,6 +127,7 @@ const SavedSongs = () => {
     return songs.map(
       (
         song: {
+          id: string;
           album: { images: { url: string } };
           artists: { name: string }[];
           preview_url: string;
@@ -117,7 +135,7 @@ const SavedSongs = () => {
         },
         index: number
       ) => (
-        <div className="d-flex justify-content-center align-items-center flex-column col-12 col-sm-6 col-md-4 p-3">
+        <div className="d-flex justify-content-center align-items-center flex-column col-12 col-md-6 col-lg-4 p-3">
           <Card key={index} image={song.album.images.url} />
           <CardBody
             artists={song.artists}
@@ -128,6 +146,16 @@ const SavedSongs = () => {
               artist: "heading__secondary-small mb-4 text-center"
             }}
           />
+          <div
+            className="heading__secondary-small mt-2"
+            style={{ color: "rgb(255, 78, 80)", cursor: "pointer" }}
+            onClick={() => {
+              console.log("song", song);
+              removeSong(song.id);
+            }}
+          >
+            Remove this song
+          </div>
         </div>
       )
     );
@@ -137,7 +165,6 @@ const SavedSongs = () => {
     const playlist: { name: string; id: string }[] = userPlaylists.filter(
       (item: { name: string; id: string }) => item.name === name
     );
-    console.log("PLA", playlist[0].id);
     return playlist[0].id;
   };
 
@@ -154,8 +181,17 @@ const SavedSongs = () => {
         if (props.loading) return <div>Loading...</div>;
         if (props.error) console.log("error", props.error);
         else {
+          !savedSongs.length && setSavedSongs(props.data.savedTracks);
+          console.log("SAVED", savedSongs);
           return username && currentPlaylist ? (
             <Fragment>
+              {isSavedPlaylist ? (
+                <SuccessMessage
+                  message={
+                    "Selected songs were successfully added to your playlist"
+                  }
+                />
+              ) : null}
               <Modal show={modalState}>
                 <PlaylistModalBody
                   name={currentPlaylist.name}
@@ -190,7 +226,7 @@ const SavedSongs = () => {
                   }}
                 />
               </div>
-              <div className="row">{renderSongs(props.data.savedTracks)}</div>
+              <div className="row">{renderSongs(savedSongs)}</div>
             </Fragment>
           ) : null;
         }
