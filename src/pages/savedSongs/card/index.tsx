@@ -12,6 +12,7 @@ export const Card = ({ image }: CardProps) => {
         <img
           className="swipe-card__image swipe-card__image-front"
           src={image}
+          alt="album cover"
         />
       </div>
     </div>

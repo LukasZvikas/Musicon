@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import gql from "graphql-tag";
+import {
+  SAVED_TRACKS_QUERY,
+  USER_PLAYLISTS_QUERY,
+  USER_DETAILS_QUERY,
+  ADD_TO_PLAYLIST_QUERY
+} from "../../graphqlQueries";
 import { Button } from "../../components/button";
 import { client } from "../../App";
 import { Card } from "./card";
@@ -11,24 +16,6 @@ import { Query } from "react-apollo";
 import { getStorageData, setStorageData } from "../../utilities/localStorage";
 import "./SavedSongs.css";
 import "../../Shared.css";
-
-const SAVED_TRACKS_QUERY = gql`
-  query SavedTracks($savedTracks: [String!]!) {
-    savedTracks(savedTracks: $savedTracks) {
-      id
-      name
-      artists {
-        name
-      }
-      preview_url
-      album {
-        images {
-          url
-        }
-      }
-    }
-  }
-`;
 
 const SavedSongs = (props: any) => {
   const [username, setUsername] = useState("");
@@ -44,13 +31,7 @@ const SavedSongs = (props: any) => {
     setSongIds(ids);
     client
       .query({
-        query: gql`
-          {
-            userDetails {
-              display_name
-            }
-          }
-        `
+        query: USER_DETAILS_QUERY
       })
       .then(({ data: { userDetails: { display_name } } }) => {
         playlistQuery(display_name);
@@ -62,14 +43,7 @@ const SavedSongs = (props: any) => {
   const playlistQuery = (username: string) => {
     client
       .query({
-        query: gql`
-          query userPlaylists($username: String!) {
-            userPlaylists(username: $username) {
-              id
-              name
-            }
-          }
-        `,
+        query: USER_PLAYLISTS_QUERY,
         variables: { username }
       })
       .then(result => {
@@ -83,13 +57,7 @@ const SavedSongs = (props: any) => {
     if (currentPlaylist.id)
       client
         .query({
-          query: gql`
-            query addToPlaylist($songIds: [String!]!, $playlist_id: String!) {
-              addToPlaylist(songIds: $songIds, playlist_id: $playlist_id) {
-                snapshot_id
-              }
-            }
-          `,
+          query: ADD_TO_PLAYLIST_QUERY,
           variables: {
             songIds: getStorageData("saved_tracks"),
             playlist_id: currentPlaylist.id

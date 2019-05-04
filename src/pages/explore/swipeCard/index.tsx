@@ -28,12 +28,14 @@ export const SwipeCard = ({ nextSong, previousSong, image }: CardProps) => {
             rotate ? "rotateNext" : ""
           }`}
           src={image}
+          alt="album cover"
         />
         <img
           className={`swipe-card__image swipe-card__image-back ${
             rotate ? "rotateBack" : ""
           }`}
           src={image}
+          alt="album cover"
         />
       </div>
 

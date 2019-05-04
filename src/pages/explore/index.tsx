@@ -3,7 +3,7 @@ import {
   updateStorageData,
   getStorageData
 } from "../../utilities/localStorage";
-import gql from "graphql-tag";
+import { GET_TRACKS_QUERY } from "../../graphqlQueries";
 import { Query } from "react-apollo";
 import { SwipeCard } from "./swipeCard";
 import { CardBody } from "../../components/cardBody";
@@ -11,24 +11,6 @@ import { Button } from "../../components/button";
 import { Alert } from "../../components/alert";
 import "../../Shared.css";
 import "./Dashboard.css";
-
-const TRACKS_QUERY = gql`
-  query TracksQuery($selectedGenres: [String!]!) {
-    suggestedTracks(selectedGenres: $selectedGenres) {
-      id
-      name
-      artists {
-        name
-      }
-      preview_url
-      album {
-        images {
-          url
-        }
-      }
-    }
-  }
-`;
 
 const Dashboard = (props: any) => {
   const [currentIndex, updateIndex] = useState(0);
@@ -93,7 +75,7 @@ const Dashboard = (props: any) => {
         <Alert message={"You already saved this song!"} isSuccess={false} />
       ) : null}
       <Query
-        query={TRACKS_QUERY}
+        query={GET_TRACKS_QUERY}
         variables={{ selectedGenres: getStorageData("selected_genres") }}
       >
         {(properties: any) => {
