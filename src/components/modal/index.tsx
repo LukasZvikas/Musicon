@@ -7,13 +7,11 @@ interface ModalProps {
 export const Modal: FunctionComponent<ModalProps> = ({ children, show }) => {
   return (
     <div
-      className={`custom-modal d-flex justify-content-center align-items-center ${
-        !show && "hide-modal"
-      }`}
+      className={`custom-modal d-flex justify-content-center align-items-center ${!show &&
+        "hide-modal"}`}
     >
-      <div className="custom-modal__form d-flex justify-content-center align-items-center flex-column p-3">
+      <div className="custom-modal__form bg-white d-flex justify-content-center align-items-center flex-column p-3">
         {children}
-        
       </div>
     </div>
   );

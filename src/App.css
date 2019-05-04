@@ -21,10 +21,6 @@
   --font-lg: 40px;
 }
 
-#root {
-  height: 100%;
-}
-
 * {
   box-sizing: border-box;
   padding: 0;
@@ -33,12 +29,14 @@
   font-family: "Oswald", sans-serif;
 }
 
+:root,
+#root,
 body {
-  height: 100vh;
+  height: 100%;
 }
 
 .content-wrapper {
-  padding: 7rem 0 0 0;
+  padding: 7rem 0 2rem 0;
 }
 
 .col-3,

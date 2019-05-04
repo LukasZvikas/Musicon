@@ -4,18 +4,24 @@ import { Link } from "react-router-dom";
 import "./Header.css";
 
 const Header = () => {
+  const getPrimaryColor = () => {
+    return getComputedStyle(document.documentElement).getPropertyValue(
+      "--color-primary"
+    );
+  };
+
+  getPrimaryColor();
+
   return (
-    <div className="header px-4">
+    <div className="header px-3">
       <div className=" header__logo bg-transparent d-flex align-items-center">
-        <LogoIcon />
-        <h3 className="header__title bg-transparent ml-2">
-          <Link to="/">
-            Musicon
-          </Link>
-        </h3>
+        <LogoIcon fill={getPrimaryColor()} />
+        <div className="header__title bg-transparent ml-2">
+          <Link to="/">Musicon</Link>
+        </div>
       </div>
       <ul className="header__links d-flex bg-transparent align-items-center">
-        <li className="bg-transparent mr-4">
+        <li className="bg-transparent mr-3">
           <Link to="/explore">Explore</Link>
         </li>
         <li className="bg-transparent">

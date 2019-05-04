@@ -3,17 +3,9 @@ import { quizData } from "./quizData";
 import { Button } from "../../components/button";
 import { SpotifyIcon } from "../../svg/spotifyIcon";
 import { Alert } from "../../components/alert";
-import {
-  updateStorageData,
-  getStorageData,
-  setStorageData
-} from "../../utilities/localStorage";
+import { getStorageData, setStorageData } from "../../utilities/localStorage";
 import "./Quiz.css";
 import "../../Shared.css";
-
-interface GenreState {
-  genreState: string[];
-}
 
 const Quiz = (props: any) => {
   const [genreState, changeGenreState] = useState(new Array());
@@ -102,8 +94,8 @@ const Quiz = (props: any) => {
           action={() => onGenreClick(item.genre)}
           colors={
             genreState.includes(item.genre)
-              ? { backgroundColor: "rgb(255, 78, 80)", color: "#fff" }
-              : { backgroundColor: "#fff", color: "rgb(255, 78, 80)" }
+              ? "bg-primary text-white"
+              : "bg-white text-primary"
           }
         />
       </div>
@@ -111,7 +103,7 @@ const Quiz = (props: any) => {
   };
 
   return (
-    <div className="quiz h-100 d-flex align-items-center">
+    <div className="quiz h-100 content-wrapper">
       {isLoginSuccess ? (
         <Alert message={"You have logged in successfully!"} isSuccess={true} />
       ) : null}
@@ -130,28 +122,29 @@ const Quiz = (props: any) => {
           1.
         </div>
         <Button
-          type={"primary"}
+          type={"primary ml-2"}
           title={"Login with Spotify"}
           action={() => {
             authorizeUser();
           }}
-          colors={{ backgroundColor: "#000", color: "#fff" }}
+          colors={"bg-black text-white"}
         >
           <SpotifyIcon />
         </Button>
       </div>
-      <div className="heading__secondary d-flex mb-4 mt-2 mx-3 text-center text-white">
-        <div className="text-white mr-2" style={{ fontSize: "28px" }}>
+      <div className="heading__secondary d-flex mb-4 mt-2 mr-5 text-center text-white">
+        <div className="text-white ml-3 mr-2" style={{ fontSize: "28px" }}>
           2.
         </div>
-        Please choose up to three of your favorite music genres.{" "}
+        Choose up to three of your favorite music genres. Save the songs that
+        you like and transfer them right to your real Spotify playlist!{" "}
       </div>
       <div className="quiz__genres row">{renderGenres(quizData)}</div>
 
       <Button
         type={"primary"}
         title={"I'm ready!"}
-        colors={{ backgroundColor: "rgb(255, 78, 80)", color: "#fff" }}
+        colors={"bg-primary text-white"}
         action={() =>
           !genreState.length
             ? onGenresError()

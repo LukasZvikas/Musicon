@@ -17,10 +17,7 @@ export const PlaylistModalBody = ({
       <div className="heading__primary-small bg-white text-center m-3">
         Confirmation
       </div>
-      <div
-        className="heading__secondary-small bg-white text-center"
-        style={{ color: "#282828" }}
-      >
+      <div className="heading__secondary-small bg-white text-center bg-white">
         Are you sure you want to add these songs to "{name}"?
       </div>
       <div className="d-flex bg-white">
@@ -30,10 +27,7 @@ export const PlaylistModalBody = ({
           action={() => {
             changeModalState();
           }}
-          colors={{
-            backgroundColor: "rgb(255, 78, 80)",
-            color: "#fff"
-          }}
+          colors={"bg-primary text-white"}
         />
         <Button
           type={"primary"}
@@ -42,10 +36,7 @@ export const PlaylistModalBody = ({
             addToPlaylist();
             changeModalState();
           }}
-          colors={{
-            backgroundColor: "#00D95F",
-            color: "#fff"
-          }}
+          colors={"bg-green text-white"}
         />
       </div>
     </Fragment>

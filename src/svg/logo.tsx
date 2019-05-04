@@ -1,7 +1,8 @@
 import React from "react";
+import "../Shared.css";
 
 interface LogoProps {
-  fill?: string;
+  fill: string;
 }
 
 export const LogoIcon = ({ fill }: LogoProps) => {
@@ -12,7 +13,7 @@ export const LogoIcon = ({ fill }: LogoProps) => {
       viewBox="11.020999908447266 10.449000358581543 80.15800476074219 78.4020004272461"
       width="45"
       height="45"
-      fill="rgb(255, 78, 80)"
+      fill={fill}
       className="bg-transparent"
     >
       <g>

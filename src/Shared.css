@@ -25,3 +25,23 @@
 .disable-link {
   pointer-events: none;
 }
+
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+
+.bg-black {
+  background-color: var(--color-black) !important;
+}
+
+.bg-green {
+  background-color: var(--color-green) !important;
+}
+
+.bg-dark {
+  background-color: var(--color-black-light) !important;
+}

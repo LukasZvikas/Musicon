@@ -33,7 +33,7 @@ export const CardBody = ({
         className={
           style && style.artist
             ? style.artist
-            : "heading__secondary mb-3 text-white text-center"
+            : "heading__secondary mb-4 text-white text-center"
         }
       >
         {renderArtists(artists)}

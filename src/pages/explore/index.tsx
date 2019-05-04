@@ -78,7 +78,6 @@ const Dashboard = (props: any) => {
     return genres.reduce(
       (acc: string[], value: string, index: number, arr: string[]) => {
         if (index === arr.length - 1) return acc.concat(value);
-        console.log(acc);
         return acc.concat(`${value}, `);
       },
       ""
@@ -86,7 +85,7 @@ const Dashboard = (props: any) => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center h-100">
+    <div className="d-flex justify-content-center align-items-center h-100 content-wrapper">
       {isSongSaved ? (
         <Alert message={"Song was successfuly saved!"} isSuccess={true} />
       ) : null}
@@ -105,10 +104,7 @@ const Dashboard = (props: any) => {
           } else {
             return (
               <div className="content-wrapper d-flex flex-column align-items-center">
-                <div
-                  className="heading__secondary mb-3"
-                  style={{ color: "rgb(255, 78, 80)" }}
-                >
+                <div className="heading__secondary mb-3 text-primary">
                   <span className="text-white">Current Genres:</span>{" "}
                   {displayGenres()}
                 </div>
@@ -136,10 +132,7 @@ const Dashboard = (props: any) => {
                   action={() =>
                     saveSong(properties.data.suggestedTracks[currentIndex].id)
                   }
-                  colors={{
-                    backgroundColor: "rgb(255, 78, 80)",
-                    color: "#fff"
-                  }}
+                  colors={"bg-primary text-white"}
                 />
               </div>
             );

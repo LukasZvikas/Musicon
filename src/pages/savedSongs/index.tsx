@@ -4,7 +4,7 @@ import { Button } from "../../components/button";
 import { client } from "../../App";
 import { Card } from "./card";
 import { Modal } from "../../components/modal";
-import { PlaylistModalBody } from "./playlistModalBody";
+import { PlaylistModalBody } from "./savedModalBody";
 import { CardBody } from "../../components/cardBody";
 import { Alert } from "../../components/alert";
 import { Query } from "react-apollo";
@@ -136,7 +136,7 @@ const SavedSongs = (props: any) => {
         },
         index: number
       ) => (
-        <div className="d-flex justify-content-center align-items-center flex-column col-12 col-md-6 col-lg-4 p-3">
+        <div className="d-flex justify-content-center align-items-center flex-column col-12 col-md-6 col-lg-4">
           <Card key={index} image={song.album.images.url} />
           <CardBody
             artists={song.artists}
@@ -148,12 +148,9 @@ const SavedSongs = (props: any) => {
             }}
           />
           <div
-            className="heading__secondary-small mt-2"
-            style={{ color: "rgb(255, 78, 80)", cursor: "pointer" }}
-            onClick={() => {
-              console.log("song", song);
-              removeSong(song.id);
-            }}
+            className="heading__secondary-small mt-2 text-primary"
+            style={{ cursor: "pointer" }}
+            onClick={() => removeSong(song.id)}
           >
             Remove this song
           </div>
@@ -223,10 +220,7 @@ const SavedSongs = (props: any) => {
                   action={() => {
                     changeModalState();
                   }}
-                  colors={{
-                    backgroundColor: "rgb(255, 78, 80)",
-                    color: "#fff"
-                  }}
+                  colors={"bg-primary text-white"}
                 />
               </div>
               <div className="row">{renderSongs(savedSongs)}</div>

@@ -5,7 +5,7 @@ interface ButtonProps {
   title: string;
   type: string;
   action: () => void;
-  colors: { backgroundColor: string; color: string };
+  colors: string;
 }
 export const Button: FunctionComponent<ButtonProps> = ({
   title,
@@ -21,8 +21,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
   return (
     <div
       onClick={onButtonClick}
-      className={`button__${type} d-flex align-items-center justify-content-center text-center`}
-      style={{ backgroundColor: colors.backgroundColor, color: colors.color }}
+      className={`button__${type} d-flex align-items-center justify-content-center text-center ${colors}`}
     >
       {title}
       {children || null}

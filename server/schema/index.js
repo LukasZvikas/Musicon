@@ -29,7 +29,7 @@ const RootQuery = new GraphQLObjectType({
         }, "");
         try {
           const result = await axios.get(
-            `https://api.spotify.com/v1/recommendations?limit=50&market=US`,
+            `https://api.spotify.com/v1/recommendations?limit=50&market=US&min_popularity=60&max_popularity=100`,
             {
               params: {
                 seed_genres: genres
@@ -112,7 +112,6 @@ const RootQuery = new GraphQLObjectType({
           );
           return result.data.items;
         } catch (err) {
-          // console.log(err);
           throw new Error("problem occurred while fetching user playlist");
         }
       }

@@ -20,8 +20,11 @@ ul {
   margin-bottom: 0 !important;
 }
 
-
-.header__logo > h3 > a, .header > ul > li a {
+.header__logo > div > a,
+.header > ul > li a {
   text-decoration: none;
   color: var(--color-primary);
+  font-size: var(--font-sm);
 }
+
+
