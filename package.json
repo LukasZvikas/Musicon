@@ -20,7 +20,8 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.0",
     "react-test-renderer": "^16.8.6",
-    "typescript": "^3.4.5"
+    "typescript": "^3.4.5",
+    "@typescript-eslint/eslint-plugin": "^1.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -46,7 +47,6 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.tsx",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.7.0",
     "@typescript-eslint/parser": "^1.7.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
