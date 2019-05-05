@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import {
   SAVED_TRACKS_QUERY,
   USER_PLAYLISTS_QUERY,
   USER_DETAILS_QUERY,
   ADD_TO_PLAYLIST_QUERY
 } from "../../graphqlQueries";
-import { SAVED_TRACKS_ERROR, UNAUTHORIZED } from "../../utilities/errorTypes";
 import { Button } from "../../components/button";
 import { client } from "../../App";
 import { Card } from "./card";
@@ -17,12 +16,13 @@ import { Query } from "react-apollo";
 import { getStorageData, setStorageData } from "../../utilities/localStorage";
 import "./SavedSongs.css";
 import "../../Shared.css";
+import { QueryError } from "../../components/queryError";
 
-const SavedSongs = (props: any) => {
+const SavedSongs = memo((props: any) => {
   const [username, setUsername] = useState("");
   const [currentPlaylist, setCurrentPlaylist] = useState({ id: "", name: "" });
   const [userPlaylists, setUserPlaylists] = useState([]);
-  const [songIds, setSongIds] = useState("");
+  const [songIds, setSongIds] = useState([]);
   const [savedSongs, setSavedSongs] = useState([]);
   const [modalState, setModalState] = useState(false);
   const [isSavedPlaylist, setIsSavedPlaylist] = useState("");
@@ -30,16 +30,25 @@ const SavedSongs = (props: any) => {
   useEffect(() => {
     const ids = getStorageData("saved_tracks");
     setSongIds(ids);
+    userQuery(playlistQuery);
+  }, []);
+
+  const userQuery = (fn: (args: any) => void) => {
     client
       .query({
         query: USER_DETAILS_QUERY
       })
       .then(({ data: { userDetails: { display_name } } }) => {
-        playlistQuery(display_name);
+        fn(display_name);
         setUsername(display_name);
       })
-      .catch(err => console.log("ERROR", err));
-  }, []);
+      .catch(err =>
+        props.history.push({
+          pathname: "/",
+          state: { authError: true }
+        })
+      );
+  };
 
   const playlistQuery = (username: string) => {
     client
@@ -74,11 +83,19 @@ const SavedSongs = (props: any) => {
   };
 
   const removeSong = (trackId: string) => {
-    const songIds = getStorageData("saved_tracks");
+    const newSongTracks = savedSongs.filter(
+      (item: {
+        id: string;
+        album: { images: { url: string } };
+        artists: { name: string }[];
+        preview_url: string;
+        name: string;
+      }) => item.id !== trackId
+    );
     const newSongIds = songIds.filter((item: string) => item !== trackId);
-    const newSongTracks = savedSongs.filter((item: any) => item.id !== trackId);
-    setStorageData("saved_tracks", newSongIds);
+    setSongIds(newSongIds);
     setSavedSongs(newSongTracks);
+    setStorageData("saved_tracks", newSongIds);
   };
 
   const handleSelectChange = (value: { name: string; id: string }) => {
@@ -105,7 +122,10 @@ const SavedSongs = (props: any) => {
         },
         index: number
       ) => (
-        <div className="d-flex justify-content-center align-items-center flex-column col-12 col-md-6 col-lg-4">
+        <div
+          key={song.id}
+          className="d-flex justify-content-center align-items-center mb-5 flex-column col-12 col-md-6 col-lg-4"
+        >
           <Card key={index} image={song.album.images.url} />
           <CardBody
             artists={song.artists}
@@ -142,23 +162,27 @@ const SavedSongs = (props: any) => {
     return setModalState(!modalState);
   };
 
+  const renderNoTracksMessage = () => (
+    <div className="heading__primary content-wrapper d-flex justify-content-center text-center px-4">
+      You haven't saved any tracks yet.
+    </div>
+  );
+
   return songIds ? (
     <Query query={SAVED_TRACKS_QUERY} variables={{ savedTracks: songIds }}>
       {(properties: any) => {
         if (properties.loading) return <div>Loading...</div>;
         if (properties.error) {
           const error = properties.error.graphQLErrors[0].message;
-          switch (error) {
-            case SAVED_TRACKS_ERROR:
-              console.log("here");
-              return <div>No saved tracks yey</div>;
-            case UNAUTHORIZED:
-              props.history.push({ pathname: "/", state: { authError: true } });
-              break;
-          }
-
+          return (
+            <QueryError pushHistory={props.history.push} errorMessage={error} />
+          );
         } else {
+          if (!savedSongs.length && !getStorageData("saved_tracks").length)
+            return renderNoTracksMessage();
+
           !savedSongs.length && setSavedSongs(properties.data.savedTracks);
+
           return username && currentPlaylist ? (
             <div className="content-wrapper">
               {isSavedPlaylist ? (
@@ -208,7 +232,9 @@ const SavedSongs = (props: any) => {
         }
       }}
     </Query>
-  ) : null;
-};
+  ) : (
+    renderNoTracksMessage()
+  );
+});
 
 export default SavedSongs;

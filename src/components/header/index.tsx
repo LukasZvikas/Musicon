@@ -13,7 +13,7 @@ const Header = () => {
   getPrimaryColor();
 
   return (
-    <div className="header px-3">
+    <div className="header px-4">
       <div className=" header__logo bg-transparent d-flex align-items-center">
         <LogoIcon fill={getPrimaryColor()} />
         <div className="header__title bg-transparent ml-2">
@@ -21,10 +21,10 @@ const Header = () => {
         </div>
       </div>
       <ul className="header__links d-flex bg-transparent align-items-center">
-        <li className="bg-transparent mr-3">
+        <li className="d-flex bg-transparent align-items-center mr-4">
           <Link to="/explore">Explore</Link>
         </li>
-        <li className="bg-transparent">
+        <li className="d-flex bg-transparent align-items-center">
           <Link to="/saved">Saved Songs</Link>
         </li>
       </ul>

@@ -26,3 +26,13 @@ ul {
   color: var(--color-primary);
   font-size: var(--font-sm);
 }
+
+@media only screen and (max-width: 600px){
+ 
+.header__logo > div > a,
+.header > ul > li a {
+  text-decoration: none;
+  color: var(--color-primary);
+  font-size: var(--font-xs);
+}
+}

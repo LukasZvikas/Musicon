@@ -24,7 +24,7 @@ export const CardBody = ({
     <div className="card__heading-wrapper mt-2">
       <div
         className={
-          style && style.name ? style.name : "heading__primary m-2 text-center"
+          style && style.name ? style.name : "heading__primary m-2 text-center px-4"
         }
       >
         {name}
@@ -33,7 +33,7 @@ export const CardBody = ({
         className={
           style && style.artist
             ? style.artist
-            : "heading__secondary mb-4 text-white text-center"
+            : "heading__secondary mb-4 text-white text-center px-4"
         }
       >
         {renderArtists(artists)}

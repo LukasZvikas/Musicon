@@ -9,16 +9,17 @@
   );
 
   --color-green: rgba(0, 217, 95, 1);
-  --color-green-light: rgba(0, 217, 95, 0.8);
+  --color-green-light: rgba(0, 217, 95, 0.9);
   --color-white: rgb(19, 12, 12);
   --color-black: #000;
   --color-black-light: #282828;
 
   /* FONTS SIZES */
-  --font-xs: 16px;
+  --font-xs: 18px;
   --font-sm: 22px;
   --font-md: 26px;
-  --font-lg: 40px;
+  --font-lg: 34px;
+  --font-xl: 40px;
 }
 
 * {
@@ -29,18 +30,11 @@
   font-family: "Oswald", sans-serif;
 }
 
-:root,
-#root,
-body {
-  height: 100%;
-}
-
 .content-wrapper {
   padding: 7rem 0 2rem 0;
 }
 
-.col-3,
-.col-6 {
+.col-3 {
   padding: 0 !important;
 }
 

@@ -4,11 +4,7 @@ import {
   getStorageData
 } from "../../utilities/localStorage";
 import { GET_TRACKS_QUERY } from "../../graphqlQueries";
-import {
-  SUGGESTED_TRACKS_ERROR,
-  UNAUTHORIZED
-} from "../../utilities/errorTypes";
-
+import { QueryError } from "../../components/queryError";
 import { Query } from "react-apollo";
 import { SwipeCard } from "./swipeCard";
 import { CardBody } from "../../components/cardBody";
@@ -72,68 +68,75 @@ const Dashboard = (props: any) => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center h-100 content-wrapper">
+    <div className="d-flex justify-content-center align-items-center h-100">
       {isSongSaved ? (
         <Alert message={"Song was successfuly saved!"} isSuccess={true} />
       ) : null}
       {isError ? (
         <Alert message={"You already saved this song!"} isSuccess={false} />
       ) : null}
-      <Query
-        query={GET_TRACKS_QUERY}
-        variables={{ selectedGenres: getStorageData("selected_genres") }}
-      >
-        {(properties: any) => {
-          if (properties.loading) return <h4>LOADING...</h4>;
-          if (properties.error) {
-            switch (properties.error) {
-              case UNAUTHORIZED:
-                props.history.push({
-                  pathname: "/",
-                  state: { authError: true }
-                });
-                break;
-            }
-            props.history.push({ pathname: "/", state: { authError: true } });
-            return null;
-          } else {
-            return (
-              <div className="content-wrapper d-flex flex-column align-items-center">
-                <div className="heading__secondary mb-3 text-primary">
-                  <span className="text-white">Current Genres:</span>{" "}
-                  {displayGenres()}
-                </div>
-                <SwipeCard
-                  nextSong={() => nextSong()}
-                  previousSong={() => previousSong()}
-                  image={
-                    properties.data.suggestedTracks[currentIndex].album.images
-                      .url
-                  }
-                />
 
-                <CardBody
-                  artists={
-                    properties.data.suggestedTracks[currentIndex].artists
-                  }
-                  name={properties.data.suggestedTracks[currentIndex].name}
-                  preview_url={
-                    properties.data.suggestedTracks[currentIndex].preview_url
-                  }
+      {getStorageData("selected_genres") ? (
+        <Query
+          query={GET_TRACKS_QUERY}
+          variables={{ selectedGenres: getStorageData("selected_genres") }}
+        >
+          {(properties: any) => {
+            if (properties.loading) return <h4>LOADING...</h4>;
+            if (properties.error) {
+              const error = properties.error.graphQLErrors[0].message;
+
+              console.log("ER", error);
+              return (
+                <QueryError
+                  pushHistory={props.history.push}
+                  errorMessage={error}
                 />
-                <Button
-                  type={"primary"}
-                  title={"Add to playlist"}
-                  action={() =>
-                    saveSong(properties.data.suggestedTracks[currentIndex].id)
-                  }
-                  colors={"bg-primary text-white"}
-                />
-              </div>
-            );
-          }
-        }}
-      </Query>
+              );
+            } else {
+              return (
+                <div className="content-wrapper d-flex flex-column align-items-center">
+                  <div className="heading__secondary mb-3 text-primary">
+                    <span className="text-white">Current Genres:</span>{" "}
+                    {displayGenres()}
+                  </div>
+                  <SwipeCard
+                    nextSong={() => nextSong()}
+                    previousSong={() => previousSong()}
+                    image={
+                      properties.data.suggestedTracks[currentIndex].album.images
+                        .url
+                    }
+                  />
+
+                  <CardBody
+                    artists={
+                      properties.data.suggestedTracks[currentIndex].artists
+                    }
+                    name={properties.data.suggestedTracks[currentIndex].name}
+                    preview_url={
+                      properties.data.suggestedTracks[currentIndex].preview_url
+                    }
+                  />
+                  <Button
+                    type={"primary"}
+                    title={"Add to playlist"}
+                    action={() =>
+                      saveSong(properties.data.suggestedTracks[currentIndex].id)
+                    }
+                    colors={"bg-primary text-white"}
+                  />
+                </div>
+              );
+            }
+          }}
+        </Query>
+      ) : (
+        props.history.push({
+          pathname: "/",
+          state: { genresError: true }
+        })
+      )}
     </div>
   );
 };

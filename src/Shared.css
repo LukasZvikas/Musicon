@@ -1,10 +1,12 @@
 .heading__primary {
-  font-size: var(--font-lg);
+  font-size: var(--font-xl);
   color: var(--color-primary);
-  /* background: var(--linear-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent; */
+}
+
+@media only screen and (max-width: 600px) {
+  .heading__primary {
+    font-size: var(--font-lg);
+  }
 }
 
 .heading__primary-small {
@@ -15,6 +17,12 @@
 .heading__secondary {
   color: var(--color-primary);
   font-size: var(--font-md);
+}
+
+@media only screen and (max-width: 600px) {
+  .heading__secondary {
+    font-size: var(--font-sm);
+  }
 }
 
 .heading__secondary-small {

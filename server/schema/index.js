@@ -29,7 +29,6 @@ const RootQuery = new GraphQLObjectType({
       },
       async resolve(parent, args, req) {
         const token = req.headers.token;
-        console.log("TOKNE", token);
         const genres = args.selectedGenres.reduce((acc, value) => {
           if (value === "R&B") return acc.concat("r-n-b,");
           else {

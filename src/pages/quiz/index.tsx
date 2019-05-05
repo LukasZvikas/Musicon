@@ -25,6 +25,12 @@ const Quiz = (props: any) => {
       return;
     }
 
+    if (props.location.state && props.location.state.genresError) {
+      props.history.replace({ pathname: "/", state: { genresError: false } });
+      onGenresError();
+      return;
+    }
+
     const selectedGenres = getStorageData("selected_genres");
 
     if (selectedGenres) changeGenreState(selectedGenres);
@@ -92,7 +98,7 @@ const Quiz = (props: any) => {
 
   const renderGenres = (genres: { genre: string }[]) => {
     return genres.map((item, index: number) => (
-      <div className="col-6 col-sm-5 col-md-2">
+      <div className="px-1 col-6 col-sm-5 col-md-2">
         <Button
           key={index}
           type={"quiz-empty"}
@@ -123,12 +129,10 @@ const Quiz = (props: any) => {
         />
       ) : null}
       <div className="heading__primary">Before We Start!</div>
-      <div className="d-flex align-items-center">
-        <div className="text-white" style={{ fontSize: "28px" }}>
-          1.
-        </div>
+      <div className="d-flex align-items-center heading__secondary px-3">
+        <div className="text-white">1.</div>
         <Button
-          type={"primary ml-2"}
+          type={"primary ml-3"}
           title={"Login with Spotify"}
           action={() => {
             authorizeUser();
@@ -138,10 +142,8 @@ const Quiz = (props: any) => {
           <SpotifyIcon />
         </Button>
       </div>
-      <div className="heading__secondary d-flex mb-4 mt-2 mr-5 text-center text-white">
-        <div className="text-white ml-3 mr-2" style={{ fontSize: "28px" }}>
-          2.
-        </div>
+      <div className="heading__secondary d-flex mb-4 mt-2 px-3 text-center text-white">
+        <div className="text-white mx-2">2.</div>
         Choose up to three of your favorite music genres. Save the songs that
         you like and transfer them right to your real Spotify playlist!{" "}
       </div>

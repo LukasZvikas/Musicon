@@ -12,3 +12,5 @@ export const ADD_TO_PLAYLIST_ERROR =
   "Problem occurred while adding songs to user's playlist";
 
 export const UNAUTHORIZED = "Request failed with status code 401";
+
+export const USER_DATA_ERROR = "Problem occurred while fetching user's data"
