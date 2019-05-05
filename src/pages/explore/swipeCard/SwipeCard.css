@@ -17,6 +17,7 @@
   left: 0;
   backface-visibility: hidden;
   object-fit: cover;
+  border-radius: 10px;
 }
 
 .swipe-card__image-back {

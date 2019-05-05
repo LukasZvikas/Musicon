@@ -4,6 +4,14 @@ const {
   GraphQLString,
   GraphQLList
 } = require("graphql");
+const {
+  SUGGESTED_TRACKS_ERROR,
+  SAVED_TRACKS_ERROR,
+  USER_DETAILS_ERROR,
+  USER_PLAYLISTS_ERROR,
+  ADD_TO_PLAYLIST_ERROR,
+  UNAUTHORIZED
+} = require("../errorTypes");
 const axios = require("axios");
 const TrackType = require("./trackType");
 const UserType = require("./userType");
@@ -21,6 +29,7 @@ const RootQuery = new GraphQLObjectType({
       },
       async resolve(parent, args, req) {
         const token = req.headers.token;
+        console.log("TOKNE", token);
         const genres = args.selectedGenres.reduce((acc, value) => {
           if (value === "R&B") return acc.concat("r-n-b,");
           else {
@@ -44,8 +53,8 @@ const RootQuery = new GraphQLObjectType({
             ({ preview_url }) => preview_url !== null
           );
         } catch (err) {
-          console.log(err);
-          throw new Error("problem occurred while fetching artists");
+          if (err.message === UNAUTHORIZED) throw new Error(UNAUTHORIZED);
+          throw new Error(SUGGESTED_TRACKS_ERROR);
         }
       }
     },
@@ -54,7 +63,7 @@ const RootQuery = new GraphQLObjectType({
       args: {
         savedTracks: { type: new GraphQLList(GraphQLString) }
       },
-      async resolve(parent, args, req) {
+      async resolve(parent, args, req, res) {
         const token = req.headers.token;
         const songIds = args.savedTracks.reduce((acc, value, index, arr) => {
           if (index === arr.length - 1) return acc.concat(value);
@@ -71,7 +80,8 @@ const RootQuery = new GraphQLObjectType({
           });
           return result.data.tracks;
         } catch (err) {
-          throw new Error("problem occurred while fetching artists");
+          if (err.message === UNAUTHORIZED) throw new Error(UNAUTHORIZED);
+          throw new Error(SAVED_TRACKS_ERROR);
         }
       }
     },
@@ -88,7 +98,7 @@ const RootQuery = new GraphQLObjectType({
 
           return result.data;
         } catch (err) {
-          throw new Error("problem occurred while fetching user's data");
+          throw new Error(USER_DETAILS_ERROR);
         }
       }
     },
@@ -112,7 +122,7 @@ const RootQuery = new GraphQLObjectType({
           );
           return result.data.items;
         } catch (err) {
-          throw new Error("problem occurred while fetching user playlist");
+          throw new Error(USER_PLAYLISTS_ERROR);
         }
       }
     },
@@ -141,9 +151,6 @@ const RootQuery = new GraphQLObjectType({
             return acc.concat(`spotify:track:${value},`);
           }, "");
 
-          console.log("URI", uris);
-          console.log("ID", token);
-
           const result = await axios(
             `https://api.spotify.com/v1/playlists/${args.playlist_id}/tracks`,
             {
@@ -155,13 +162,9 @@ const RootQuery = new GraphQLObjectType({
               }
             }
           );
-          console.log("RESULT", result.data);
           return result.data;
         } catch (err) {
-          console.log("ERR", err);
-          throw new Error(
-            "problem occurred while adding songs to the playlist"
-          );
+          throw new Error(ADD_TO_PLAYLIST_ERROR);
         }
       }
     }

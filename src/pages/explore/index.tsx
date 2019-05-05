@@ -4,6 +4,11 @@ import {
   getStorageData
 } from "../../utilities/localStorage";
 import { GET_TRACKS_QUERY } from "../../graphqlQueries";
+import {
+  SUGGESTED_TRACKS_ERROR,
+  UNAUTHORIZED
+} from "../../utilities/errorTypes";
+
 import { Query } from "react-apollo";
 import { SwipeCard } from "./swipeCard";
 import { CardBody } from "../../components/cardBody";
@@ -81,6 +86,14 @@ const Dashboard = (props: any) => {
         {(properties: any) => {
           if (properties.loading) return <h4>LOADING...</h4>;
           if (properties.error) {
+            switch (properties.error) {
+              case UNAUTHORIZED:
+                props.history.push({
+                  pathname: "/",
+                  state: { authError: true }
+                });
+                break;
+            }
             props.history.push({ pathname: "/", state: { authError: true } });
             return null;
           } else {

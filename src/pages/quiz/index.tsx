@@ -20,16 +20,15 @@ const Quiz = (props: any) => {
 
   useEffect(() => {
     if (props.location.state && props.location.state.authError) {
-      setIsLoginError(true);
       props.history.replace({ pathname: "/", state: { authError: false } });
-      setTimeout(function() {
-        setIsLoginError(false);
-      }, 2000);
+      onLoginError();
       return;
     }
 
     const selectedGenres = getStorageData("selected_genres");
+
     if (selectedGenres) changeGenreState(selectedGenres);
+
     const token = getHash();
     if (token) localStorage.setItem("token", token);
     return;
@@ -81,7 +80,14 @@ const Quiz = (props: any) => {
     setIsGenresError(true);
     setTimeout(function() {
       setIsGenresError(false);
-    }, 1000);
+    }, 2000);
+  };
+
+  const onLoginError = () => {
+    setIsLoginError(true);
+    setTimeout(function() {
+      setIsLoginError(false);
+    }, 2000);
   };
 
   const renderGenres = (genres: { genre: string }[]) => {
@@ -145,12 +151,17 @@ const Quiz = (props: any) => {
         type={"primary"}
         title={"I'm ready!"}
         colors={"bg-primary text-white"}
-        action={() =>
-          !genreState.length
+        action={() => {
+          if (!getStorageData("token")) {
+            console.log("here");
+            return onLoginError();
+          }
+          console.log("genre", genreState);
+          return !genreState.length
             ? onGenresError()
             : (setStorageData("selected_genres", genreState),
-              props.history.push("/explore"))
-        }
+              props.history.push("/explore"));
+        }}
       />
     </div>
   );

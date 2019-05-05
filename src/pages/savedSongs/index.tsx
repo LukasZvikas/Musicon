@@ -5,6 +5,7 @@ import {
   USER_DETAILS_QUERY,
   ADD_TO_PLAYLIST_QUERY
 } from "../../graphqlQueries";
+import { SAVED_TRACKS_ERROR, UNAUTHORIZED } from "../../utilities/errorTypes";
 import { Button } from "../../components/button";
 import { client } from "../../App";
 import { Card } from "./card";
@@ -146,8 +147,16 @@ const SavedSongs = (props: any) => {
       {(properties: any) => {
         if (properties.loading) return <div>Loading...</div>;
         if (properties.error) {
-          props.history.push({ pathname: "/", state: { authError: true } });
-          return null;
+          const error = properties.error.graphQLErrors[0].message;
+          switch (error) {
+            case SAVED_TRACKS_ERROR:
+              console.log("here");
+              return <div>No saved tracks yey</div>;
+            case UNAUTHORIZED:
+              props.history.push({ pathname: "/", state: { authError: true } });
+              break;
+          }
+
         } else {
           !savedSongs.length && setSavedSongs(properties.data.savedTracks);
           return username && currentPlaylist ? (

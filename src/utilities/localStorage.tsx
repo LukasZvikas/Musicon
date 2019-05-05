@@ -3,9 +3,8 @@ const TRACK_DATA = "track_data";
 export const getStorageData = (key: string) => {
   try {
     const data = localStorage.getItem(key);
-    if (data) console.log("dat", data.split("]"));
+    if (data) data.split("]");
     if (data && data.split("]").length > 1) {
-      console.log("parsed", JSON.parse(data));
       return JSON.parse(data);
     }
     return data;

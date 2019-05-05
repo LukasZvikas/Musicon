@@ -1,7 +1,10 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import ApolloClient from "apollo-boost";
+import { ApolloClient } from "apollo-client";
 import { ApolloProvider } from "react-apollo";
+import { setContext } from "apollo-link-context";
+import { createHttpLink } from "apollo-link-http";
+import { InMemoryCache } from "apollo-cache-inmemory";
 import Header from "./components/header";
 import Quiz from "./pages/quiz";
 import Explore from "./pages/explore";
@@ -9,11 +12,23 @@ import SavedSongs from "./pages/savedSongs";
 import { getStorageData } from "./utilities/localStorage";
 import "./App.css";
 
+const httpLink = createHttpLink({
+  uri: "http://localhost:5000/graphql"
+});
+
+const authLink = setContext((_, { headers }) => {
+  const token = getStorageData("token");
+  return {
+    headers: {
+      ...headers,
+      token
+    }
+  };
+});
+
 export const client = new ApolloClient({
-  uri: "http://localhost:5000/graphql",
-  headers: {
-    token: getStorageData("token")
-  }
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache()
 });
 
 const App = () => {
