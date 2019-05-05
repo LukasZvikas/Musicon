@@ -13,7 +13,7 @@ import { getStorageData } from "./utilities/localStorage";
 import "./App.css";
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:5000/graphql"
+  uri: "/graphql"
 });
 
 const authLink = setContext((_, { headers }) => {
