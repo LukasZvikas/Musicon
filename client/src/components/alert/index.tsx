@@ -16,7 +16,7 @@ export const Alert = ({ message, isSuccess }: MessageProps) => {
       <h5 className="text-white bg-transparent">
         {isSuccess ? "Success!" : "Error!"}
       </h5>
-      <div className="text-white bg-transparent">{message}</div>
+      <div className="text-white bg-transparent text-center">{message}</div>
     </div>
   );
 };
