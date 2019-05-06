@@ -14,8 +14,8 @@ const Quiz = (props: any) => {
   const [isGenresError, setIsGenresError] = useState(false);
 
   const authorizeUser = async () => {
-    window.location.href =
-      "https://accounts.spotify.com/en/authorize?client_id=b1e047dc11e749cfb928e1d33b784a2b&response_type=token&redirect_uri=http:%2F%2Flocalhost:3000%2F&scope=playlist-modify-public";
+    const redirect_uri = window.location.href;
+    window.location.href = `https://accounts.spotify.com/en/authorize?client_id=b1e047dc11e749cfb928e1d33b784a2b&response_type=token&redirect_uri=${redirect_uri}&scope=playlist-modify-public`;
   };
 
   useEffect(() => {
