@@ -1,56 +1,24 @@
 {
-  "name": "spotify-app",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@types/graphql": "^14.2.0",
-    "@types/react": "^16.8.14",
-    "@types/react-dom": "^16.8.4",
-    "@types/react-router-dom": "^4.3.2",
-    "apollo-boost": "^0.3.1",
-    "apollo-cache-inmemory": "^1.5.1",
-    "apollo-link-context": "^1.0.17",
-    "apollo-link-http": "^1.5.14",
-    "axios": "^0.18.0",
-    "graphql": "^14.2.1",
-    "react": "^16.8.6",
-    "react-apollo": "^2.5.5",
-    "react-dom": "^16.8.6",
-    "react-router-dom": "^5.0.0",
-    "react-scripts": "3.0.0",
-    "react-test-renderer": "^16.8.6",
-    "typescript": "^3.4.5"
+  "name": "server",
+  "engines": {
+    "node": "11.11.0"
   },
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
-  "main": "index.tsx",
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.7.0",
-    "@typescript-eslint/parser": "^1.7.0",
-    "enzyme": "^3.9.0",
-    "enzyme-adapter-react-16": "^1.12.1",
-    "eslint": "^5.16.0"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "express-graphql": "^0.8.0",
+    "graphql": "^14.2.1"
+  }
 }
