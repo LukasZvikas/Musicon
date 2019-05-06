@@ -20,7 +20,7 @@ ul {
   margin-bottom: 0 !important;
 }
 
-.header__logo > div > a,
+.header > a,
 .header > ul > li a {
   text-decoration: none;
   color: var(--color-primary);
