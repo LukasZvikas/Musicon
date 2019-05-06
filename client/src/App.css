@@ -20,6 +20,8 @@
   --font-md: 26px;
   --font-lg: 34px;
   --font-xl: 40px;
+
+  background-color: var(--color-black-light);
 }
 
 * {
