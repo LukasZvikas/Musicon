@@ -13,6 +13,7 @@ import { PlaylistModalBody } from "./savedModalBody";
 import { CardBody } from "../../components/cardBody";
 import { Alert } from "../../components/alert";
 import { Query } from "react-apollo";
+import { Spinner } from "../../components/spinner";
 import { getStorageData, setStorageData } from "../../utilities/localStorage";
 import "./SavedSongs.css";
 import "../../Shared.css";
@@ -171,7 +172,7 @@ const SavedSongs = memo((props: any) => {
   return songIds ? (
     <Query query={SAVED_TRACKS_QUERY} variables={{ savedTracks: songIds }}>
       {(properties: any) => {
-        if (properties.loading) return <div>Loading...</div>;
+        if (properties.loading) return <Spinner />;
         if (properties.error) {
           const error = properties.error.graphQLErrors[0].message;
           return (

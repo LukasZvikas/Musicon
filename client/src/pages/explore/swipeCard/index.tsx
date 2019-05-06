@@ -7,21 +7,33 @@ interface CardProps {
   nextSong: () => void;
   previousSong: () => void;
   image: string;
+  listLength: number;
+  currentIndex: number;
 }
 
-export const SwipeCard = ({ nextSong, previousSong, image }: CardProps) => {
+export const SwipeCard = ({
+  nextSong,
+  previousSong,
+  image,
+  currentIndex,
+  listLength
+}: CardProps) => {
   const [rotate, rotateCard] = useState(false);
 
   const changeCard = () => rotateCard(!rotate);
 
   return (
     <div className="swipe-card d-flex align-items-center">
-      <BackArrow
-        action={() => {
-          changeCard();
-          previousSong();
-        }}
-      />
+      {currentIndex !== 0 ? (
+        <BackArrow
+          action={() => {
+            changeCard();
+            previousSong();
+          }}
+        />
+      ) : (
+        <div style={{width: "40px"}}/>
+      )}
       <div className="swipe-card__image-wrapper mx-4">
         <img
           className={`swipe-card__image swipe-card__image-front ${
@@ -38,13 +50,14 @@ export const SwipeCard = ({ nextSong, previousSong, image }: CardProps) => {
           alt="album cover"
         />
       </div>
-
-      <NextArrow
-        action={() => {
-          changeCard();
-          nextSong();
-        }}
-      />
+      {currentIndex !== listLength - 1 ? (
+        <NextArrow
+          action={() => {
+            changeCard();
+            nextSong();
+          }}
+        />
+      ) : <div style={{width: "40px"}}/>}
     </div>
   );
 };

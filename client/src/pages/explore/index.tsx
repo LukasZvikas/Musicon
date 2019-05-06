@@ -10,6 +10,7 @@ import { SwipeCard } from "./swipeCard";
 import { CardBody } from "../../components/cardBody";
 import { Button } from "../../components/button";
 import { Alert } from "../../components/alert";
+import { Spinner } from "../../components/spinner";
 import "../../Shared.css";
 import "./Dashboard.css";
 
@@ -82,11 +83,9 @@ const Dashboard = (props: any) => {
           variables={{ selectedGenres: getStorageData("selected_genres") }}
         >
           {(properties: any) => {
-            if (properties.loading) return <h4>LOADING...</h4>;
+            if (properties.loading) return <Spinner />;
             if (properties.error) {
               const error = properties.error.graphQLErrors[0].message;
-
-              console.log("ER", error);
               return (
                 <QueryError
                   pushHistory={props.history.push}
@@ -107,6 +106,8 @@ const Dashboard = (props: any) => {
                       properties.data.suggestedTracks[currentIndex].album.images
                         .url
                     }
+                    listLength={properties.data.suggestedTracks.length}
+                    currentIndex={currentIndex}
                   />
 
                   <CardBody

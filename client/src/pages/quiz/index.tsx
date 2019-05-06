@@ -154,11 +154,7 @@ const Quiz = (props: any) => {
         title={"I'm ready!"}
         colors={"bg-primary text-white"}
         action={() => {
-          if (!getStorageData("token")) {
-            console.log("here");
-            return onLoginError();
-          }
-          console.log("genre", genreState);
+          if (!getStorageData("token")) return onLoginError();
           return !genreState.length
             ? onGenresError()
             : (setStorageData("selected_genres", genreState),
