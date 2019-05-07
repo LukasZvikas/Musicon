@@ -13,38 +13,38 @@ import { getStorageData } from "./utilities/localStorage";
 import "./App.css";
 
 const httpLink = createHttpLink({
-  uri: "/graphql"
+    uri: "/graphql"
 });
 
 const authLink = setContext((_, { headers }) => {
-  const token = getStorageData("token");
-  return {
-    headers: {
-      ...headers,
-      token
-    }
-  };
+    const token = getStorageData("token");
+    return {
+        headers: {
+            ...headers,
+            token
+        }
+    };
 });
 
 export const client = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache()
 });
 
 const App = () => {
-  return (
-    <ApolloProvider client={client}>
-      <BrowserRouter>
-        <Header />
-        <Switch>
-          <Route path="/" exact component={Quiz} />
-          <Route path="/explore" component={Explore} />
-          <Route path="/saved" component={SavedSongs} />
-          <Route path="/*" component={Quiz} />
-        </Switch>
-      </BrowserRouter>
-    </ApolloProvider>
-  );
+    return (
+        <ApolloProvider client={client}>
+            <BrowserRouter>
+                <Header />
+                <Switch>
+                    <Route path="/" exact component={Quiz} />
+                    <Route path="/explore" component={Explore} />
+                    <Route path="/saved" component={SavedSongs} />
+                    <Route path="/*" component={Quiz} />
+                </Switch>
+            </BrowserRouter>
+        </ApolloProvider>
+    );
 };
 
 export default App;

@@ -8,161 +8,160 @@ import "./Quiz.css";
 import "../../Shared.css";
 
 const Quiz = (props: any) => {
-  const [genreState, changeGenreState] = useState(new Array());
-  const [isLoginSuccess, changeLoginSuccess] = useState(false);
-  const [isLoginError, setIsLoginError] = useState(false);
-  const [isGenresError, setIsGenresError] = useState(false);
+    const [genreState, changeGenreState] = useState([]);
+    const [isLoginSuccess, changeLoginSuccess] = useState(false);
+    const [isLoginError, setIsLoginError] = useState(false);
+    const [isGenresError, setIsGenresError] = useState(false);
 
-  const authorizeUser = async () => {
-    const redirect_uri = window.location.href;
-    window.location.href = `https://accounts.spotify.com/en/authorize?client_id=b1e047dc11e749cfb928e1d33b784a2b&response_type=token&redirect_uri=${redirect_uri}&scope=playlist-modify-public`;
-  };
+    const authorizeUser = async () => {
+        const redirectUri = window.location.href;
+        window.location.href = `https://accounts.spotify.com/en/authorize?client_id=b1e047dc11e749cfb928e1d33b784a2b&response_type=token&redirect_uri=${redirectUri}&scope=playlist-modify-public`;
+    };
 
-  useEffect(() => {
-    if (props.location.state && props.location.state.authError) {
-      props.history.replace({ pathname: "/", state: { authError: false } });
-      onLoginError();
-      return;
-    }
+    const onLoginError = (): void => {
+        setIsLoginError(true);
+        setTimeout(function() {
+            setIsLoginError(false);
+        }, 2000);
+    };
 
-    if (props.location.state && props.location.state.genresError) {
-      props.history.replace({ pathname: "/", state: { genresError: false } });
-      onGenresError();
-      return;
-    }
+    const onGenresError = (): void => {
+        setIsGenresError(true);
+        setTimeout(function() {
+            setIsGenresError(false);
+        }, 2000);
+    };
 
-    const selectedGenres = getStorageData("selected_genres");
+    const getHash = (): string => {
+        const hash = window.location.hash
+            .substring(1)
+            .split("&")
+            .reduce(function(initial: any, item) {
+                if (item) {
+                    var parts = item.split("=");
+                    initial[parts[0]] = decodeURIComponent(parts[1]);
+                }
+                return initial;
+            }, {});
 
-    if (selectedGenres) changeGenreState(selectedGenres);
+        window.location.hash = "";
 
-    const token = getHash();
-    if (token) localStorage.setItem("token", token);
-    return;
-  }, []);
-
-  const getHash = () => {
-    const hash = window.location.hash
-      .substring(1)
-      .split("&")
-      .reduce(function(initial: any, item) {
-        if (item) {
-          var parts = item.split("=");
-          initial[parts[0]] = decodeURIComponent(parts[1]);
+        let _token = hash.access_token;
+        if (_token) {
+            changeLoginSuccess(true);
+            setTimeout(function() {
+                changeLoginSuccess(false);
+            }, 2000);
         }
-        return initial;
-      }, {});
+        return _token;
+    };
 
-    window.location.hash = "";
+    useEffect(() => {
+        if (props.location.state && props.location.state.authError) {
+            props.history.replace({ pathname: "/", state: { authError: false } });
+            onLoginError();
+            return;
+        }
 
-    let _token = hash.access_token;
-    if (_token) {
-      changeLoginSuccess(true);
-      setTimeout(function() {
-        changeLoginSuccess(false);
-      }, 2000);
-    }
-    return _token;
-  };
+        if (props.location.state && props.location.state.genresError) {
+            props.history.replace({ pathname: "/", state: { genresError: false } });
+            onGenresError();
+            return;
+        }
 
-  const onGenreClick = (name: string) => {
-    let newState;
-    if (!genreState.includes(name) && genreState.length < 3) {
-      newState = genreState;
-      newState.push(name);
-      changeGenreState([...newState]);
-    } else {
-      const indexOfItem = genreState.indexOf(name);
+        const selectedGenres = getStorageData("selected_genres");
 
-      if (indexOfItem === -1) return;
+        if (selectedGenres) changeGenreState(selectedGenres);
 
-      newState = genreState;
-      newState.splice(indexOfItem, 1);
+        const token = getHash();
+        if (token) localStorage.setItem("token", token);
+        return;
+    }, []);
 
-      changeGenreState([...newState]);
-    }
-  };
+    const onGenreClick = (name: string): void => {
+        let newState;
+        if (!genreState.includes(name) && genreState.length < 3) {
+            newState = genreState;
+            newState.push(name);
+            changeGenreState([...newState]);
+        } else {
+            const indexOfItem = genreState.indexOf(name);
 
-  const onGenresError = () => {
-    setIsGenresError(true);
-    setTimeout(function() {
-      setIsGenresError(false);
-    }, 2000);
-  };
+            if (indexOfItem === -1) return;
 
-  const onLoginError = () => {
-    setIsLoginError(true);
-    setTimeout(function() {
-      setIsLoginError(false);
-    }, 2000);
-  };
+            newState = genreState;
+            newState.splice(indexOfItem, 1);
 
-  const renderGenres = (genres: { genre: string }[]) => {
-    return genres.map((item, index: number) => (
-      <div className="px-1 col-6 col-sm-5 col-md-2">
-        <Button
-          key={index}
-          type={"quiz-empty"}
-          title={item.genre}
-          action={() => onGenreClick(item.genre)}
-          colors={
-            genreState.includes(item.genre)
-              ? "bg-primary text-white"
-              : "bg-white text-primary"
-          }
-        />
-      </div>
-    ));
-  };
+            changeGenreState([...newState]);
+        }
+    };
 
-  return (
-    <div className="quiz h-100 content-wrapper">
-      {isLoginSuccess ? (
-        <Alert message={"You have logged in successfully!"} isSuccess={true} />
-      ) : null}
-      {isLoginError ? (
-        <Alert message={"Please login first!"} isSuccess={false} />
-      ) : null}
-      {isGenresError ? (
-        <Alert
-          message={"Please choose at least one genre first!"}
-          isSuccess={false}
-        />
-      ) : null}
-      <div className="heading__primary">Before We Start!</div>
-      <div className="d-flex align-items-center heading__secondary px-3">
-        <div className="text-white">1.</div>
-        <Button
-          type={"primary ml-3"}
-          title={"Login with Spotify"}
-          action={() => {
-            authorizeUser();
-          }}
-          colors={"bg-black text-white"}
-        >
-          <SpotifyIcon />
-        </Button>
-      </div>
-      <div className="heading__secondary d-flex mb-4 mt-2 px-3 text-center text-white">
-        <div className="text-white mx-2">2.</div>
+    const renderGenres = (genres: { genre: string }[]) => {
+        return genres.map((item: { genre: string }, index: number) => (
+            <div className="px-1 col-6 col-sm-5 col-md-2" key={index}>
+                <Button
+                    type={"quiz-empty"}
+                    title={item.genre}
+                    action={() => onGenreClick(item.genre)}
+                    colors={
+                        genreState.includes(item.genre)
+                            ? "bg-primary text-white"
+                            : "bg-white text-primary"
+                    }
+                />
+            </div>
+        ));
+    };
+
+    return (
+        <div className="quiz h-100 content-wrapper">
+            {isLoginSuccess ? (
+                <Alert message={"You have logged in successfully!"} isSuccess={true} />
+            ) : null}
+            {isLoginError ? (
+                <Alert message={"Please login first!"} isSuccess={false} />
+            ) : null}
+            {isGenresError ? (
+                <Alert
+                    message={"Please choose at least one genre first!"}
+                    isSuccess={false}
+                />
+            ) : null}
+            <div className="heading__primary">Before We Start!</div>
+            <div className="d-flex align-items-center heading__secondary px-3">
+                <div className="text-white">1.</div>
+                <Button
+                    type={"primary ml-3"}
+                    title={"Login with Spotify"}
+                    action={() => {
+                        authorizeUser();
+                    }}
+                    colors={"bg-black text-white"}
+                >
+                    <SpotifyIcon />
+                </Button>
+            </div>
+            <div className="heading__secondary d-flex mb-4 mt-2 px-3 text-center text-white">
+                <div className="text-white mx-2">2.</div>
         Choose up to three of your favorite music genres. Save the songs that
         you like and transfer them right to your real Spotify playlist!{" "}
-      </div>
-      <div className="quiz__genres row">{renderGenres(quizData)}</div>
+            </div>
+            <div className="quiz__genres row">{renderGenres(quizData)}</div>
 
-      <Button
-        type={"primary"}
-        title={"I'm ready!"}
-        colors={"bg-primary text-white"}
-        action={() => {
-          if (!getStorageData("token")) return onLoginError();
-          return !genreState.length
-            ? onGenresError()
-            : (setStorageData("selected_genres", genreState),
-              props.history.push("/explore"));
-        }}
-      />
-    </div>
-  );
+            <Button
+                type={"primary"}
+                title={"I'm ready!"}
+                colors={"bg-primary text-white"}
+                action={() => {
+                    if (!getStorageData("token")) return onLoginError();
+                    return !genreState.length
+                        ? onGenresError()
+                        : (setStorageData("selected_genres", genreState),
+                        props.history.push("/explore"));
+                }}
+            />
+        </div>
+    );
 };
 
 export default Quiz;
