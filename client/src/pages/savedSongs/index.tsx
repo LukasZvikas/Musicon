@@ -20,13 +20,13 @@ import "../../Shared.css";
 import { QueryError } from "../../components/queryError";
 
 const SavedSongs: React.StatelessComponent<{}> = memo((props: any) => {
-    const [username, setUsername] = useState("");
-    const [currentPlaylist, setCurrentPlaylist] = useState({ id: "", name: "" });
+    const [username, setUsername] = useState<string>("");
+    const [currentPlaylist, setCurrentPlaylist] = useState<{ id: string, name: string }>({ id: "", name: "" });
     const [userPlaylists, setUserPlaylists] = useState([]);
     const [songIds, setSongIds] = useState([]);
     const [savedSongs, setSavedSongs] = useState([]);
-    const [modalState, setModalState] = useState(false);
-    const [isSavedPlaylist, setIsSavedPlaylist] = useState("");
+    const [modalState, setModalState] = useState<boolean>(false);
+    const [isSavedPlaylist, setIsSavedPlaylist] = useState<string>("");
 
     const userQuery = (fn: (args: any) => void) => {
         client
@@ -49,7 +49,7 @@ const SavedSongs: React.StatelessComponent<{}> = memo((props: any) => {
         const ids = getStorageData("saved_tracks");
         setSongIds(ids);
         userQuery(playlistQuery);
-    }, []);
+    }, [userQuery]);
 
     const playlistQuery = (username: string) => {
         client
@@ -76,7 +76,7 @@ const SavedSongs: React.StatelessComponent<{}> = memo((props: any) => {
                 })
                 .then(result => {
                     setIsSavedPlaylist(result.data.addToPlaylist.snapshot_id);
-                    setTimeout(function() {
+                    setTimeout(function () {
                         setIsSavedPlaylist("");
                     }, 2000);
                 })
@@ -123,29 +123,29 @@ const SavedSongs: React.StatelessComponent<{}> = memo((props: any) => {
                 },
                 index: number
             ) => (
-                <div
-                    key={song.id}
-                    className="d-flex justify-content-center align-items-center mb-5 flex-column col-12 col-md-6 col-lg-4"
-                >
-                    <Card key={index} image={song.album.images.url} />
-                    <CardBody
-                        artists={song.artists}
-                        preview_url={song.preview_url}
-                        name={song.name}
-                        style={{
-                            name: "heading__primary-small mb-2 mt-2 text-center",
-                            artist: "heading__secondary-small mb-3 text-center text-white"
-                        }}
-                    />
                     <div
-                        className="heading__secondary-small mt-2 text-primary"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => removeSong(song.id)}
+                        key={song.id}
+                        className="d-flex justify-content-center align-items-center mb-5 flex-column col-12 col-md-6 col-lg-4"
                     >
-            Remove this song
+                        <Card key={index} image={song.album.images.url} />
+                        <CardBody
+                            artists={song.artists}
+                            preview_url={song.preview_url}
+                            name={song.name}
+                            style={{
+                                name: "heading__primary-small mb-2 mt-2 text-center",
+                                artist: "heading__secondary-small mb-3 text-center text-white"
+                            }}
+                        />
+                        <div
+                            className="heading__secondary-small mt-2 text-primary"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => removeSong(song.id)}
+                        >
+                            Remove this song
                     </div>
-                </div>
-            )
+                    </div>
+                )
         );
     };
 
@@ -165,7 +165,7 @@ const SavedSongs: React.StatelessComponent<{}> = memo((props: any) => {
 
     const renderNoTracksMessage = () => (
         <div className="heading__primary content-wrapper d-flex justify-content-center text-center px-4">
-      You haven't saved any tracks yet.
+            You haven't saved any tracks yet.
         </div>
     );
 
@@ -203,7 +203,7 @@ const SavedSongs: React.StatelessComponent<{}> = memo((props: any) => {
                             </Modal>
                             <div className="d-flex justify-content-center align-items-center mb-3 flex-column">
                                 <div className="heading__primary mb-3">
-                  Choose your playlist
+                                    Choose your playlist
                                 </div>
                                 <select
                                     className="select-input"
@@ -228,14 +228,14 @@ const SavedSongs: React.StatelessComponent<{}> = memo((props: any) => {
                             <div className="row">{renderSongs(savedSongs)}</div>
                         </div>
                     ) : (
-                        <div>Please login</div>
-                    );
+                            <div>Please login</div>
+                        );
                 }
             }}
         </Query>
     ) : (
-        renderNoTracksMessage()
-    );
+            renderNoTracksMessage()
+        );
 });
 
 export default SavedSongs;
